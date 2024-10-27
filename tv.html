@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player de Canais</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      padding: 10px;
+    }
+
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .channel {
+      width: calc(25% - 10px);
+      background-color: #fbc85c;
+      border-radius: 5px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .channel:hover {
+      transform: scale(1.05);
+    }
+
+    .channel img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .channel-info {
+      padding: 10px;
+      text-align: center;
+    }
+
+    .channel-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .channel-description {
+      font-size: 0.9em;
+      color: #bdc3c7;
+    }
+
+    #player {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #player video {
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    #close-player {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .channel {
+        width: calc(50% - 10px);
+      }
+
+      .channel img {
+        height: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .channel {
+        width: calc(100% - 10px);
+      }
+
+      .channel img {
+        height: 80px;
+      }
+
+      #close-player {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <main id="channels-container">
+    <!-- Canais serão adicionados dinamicamente via JavaScript -->
+  </main>
+</div>
+
+<div id="player">
+  <span id="close-player">&times;</span>
+  <video id="video-player" controls>
+    <source src="" type="video/mp4">
+    Seu navegador não suporta o elemento de vídeo.
+  </video>
+</div>
+
+<script>
+  const channels = [
+    {
+      name: "MUSIC",
+      description: "",
+      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
+      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
+    },
+    {
+      name: "CINE",
+      description: "",
+      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
+      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
+    },
+    {
+      name: "NEWS",
+      description: "",
+      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
+      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
+    },
+    {
+      name: "KIDS",
+      description: "",
+      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
+      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
+    }
+  ];
+
+  const channelsContainer = document.getElementById('channels-container');
+  const player = document.getElementById('player');
+  const videoPlayer = document.getElementById('video-player');
+  const closePlayer = document.getElementById('close-player');
+
+  function createChannelElement(channel) {
+    const channelElement = document.createElement('div');
+    channelElement.className = 'channel';
+    channelElement.innerHTML = `
+      <img alt="${channel.name} channel thumbnail" src="${channel.image}">
+      <div class="channel-info">
+        <div class="channel-name">${channel.name}</div>
+        <div class="channel-description">${channel.description}</div>
+      </div>
+    `;
+    channelElement.addEventListener('click', () => playChannel(channel));
+    return channelElement;
+  }
+
+  function playChannel(channel) {
+    videoPlayer.src = channel.stream;
+    player.style.display = 'flex';
+    videoPlayer.play();
+  }
+
+  closePlayer.addEventListener('click', () => {
+    player.style.display = 'none';
+    videoPlayer.pause();
+    videoPlayer.src = '';
+  });
+
+  channels.forEach(channel => {
+    channelsContainer.appendChild(createChannelElement(channel));
+  });
+</script>
+
+</body>
+</html>
