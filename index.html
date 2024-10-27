@@ -33,6 +33,7 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            position: relative;
         }
 
         video {
@@ -67,10 +68,14 @@
         }
 
         #status {
-            padding: 10px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 8px;
             font-size: 14px;
-            color: #bbb;
-            text-align: center;
             font-style: italic;
         }
 
@@ -83,6 +88,7 @@
             #app-container {
                 max-width: 100%;
             }
+
             .button {
                 font-size: 20px;
             }
@@ -90,7 +96,8 @@
     </style>
 </head>
 <body>
-    <div id="app-container">
+    <div id="app-container" onclick="toggleFullScreen()">
+        <div id="status">Carregando...</div>
         <video id="meuVideo" playsinline preload="auto"></video>
         <div id="controls">
             <button id="playButton" class="button">
@@ -100,7 +107,6 @@
                 <i class="fas fa-tv"></i>
             </a>
         </div>
-        <div id="status">Carregando...</div>
     </div>
 
     <script>
@@ -201,6 +207,17 @@
             const { index, startTime } = getSyncedVideoAndTime();
             changeVideo(index, startTime);
         });
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.getElementById('app-container').requestFullscreen().catch(err => {
+                    console.error(`Erro ao habilitar tela cheia: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
     </script>
 </body>
 </html>
+
