@@ -36,16 +36,6 @@
             position: relative;
         }
 
-        #status {
-            padding: 10px 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border-radius: 8px;
-            font-size: 14px;
-            font-style: italic;
-            margin: 10px 0; /* Margem entre o status e o player */
-        }
-
         video {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -77,6 +67,21 @@
             transform: scale(1.1);
         }
 
+        #contact-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            color: white;
+            font-size: 12px;
+            background-color: #181818;
+        }
+
+        #contact-info i {
+            margin-right: 5px;
+        }
+
         @media (max-width: 480px) {
             #app-container {
                 max-width: 100%;
@@ -90,7 +95,6 @@
 </head>
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
-        <div id="status">Carregando...</div>
         <video id="meuVideo" playsinline preload="auto"></video>
         <div id="controls">
             <button id="playButton" class="button">
@@ -99,6 +103,11 @@
             <a href="https://www.africamono.it.ao/p/live-channel-2424.html" class="button">
                 <i class="fas fa-tv"></i>
             </a>
+        </div>
+        <div id="contact-info">
+            <span><i class="fas fa-globe"></i> www.africamono.it.ao</span>
+            <span><i class="fas fa-envelope"></i> geral@africamono.it.a</span>
+            <span><i class="fas fa-phone"></i> +244 955 520 530</span>
         </div>
     </div>
 
@@ -112,7 +121,6 @@
         const videoDurations = [2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
-        const status = document.getElementById('status');
         const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
 
         let isStreaming = false;
@@ -136,7 +144,6 @@
             videoPlayer.src = videoSources[index];
             videoPlayer.currentTime = startTime;
             videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
-            updateStatus(false);
         }
 
         function autoplayNextVideo() {
@@ -145,17 +152,12 @@
             changeVideo(currentIndex, startTime);
         }
 
-        function updateStatus(isLive) {
-            status.textContent = isLive ? 'Live' : 'Programas Gravados';
-        }
-
         function startStreaming() {
             if (!isStreaming) {
                 videoPlayer.pause();
                 videoPlayer.src = streamingUrl;
                 videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
                 isStreaming = true;
-                updateStatus(true);
             }
         }
 
@@ -164,7 +166,6 @@
                 const { index, startTime } = getSyncedVideoAndTime();
                 changeVideo(index, startTime);
                 isStreaming = false;
-                updateStatus(false);
             }
         }
 
@@ -213,5 +214,6 @@
     </script>
 </body>
 </html>
+
 
 
