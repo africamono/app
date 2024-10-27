@@ -3,111 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player - Fullscreen</title>
+    <title>Video Player App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
-        /* Estilos globais e tema dark */
-        body {
+        /* Estilos gerais */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #121212;
-            font-family: Arial, sans-serif;
+            background-color: #181818;
         }
 
-        #fullscreen-container {
+        #app-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             width: 90%;
-            max-width: 800px;
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            background-color: #1f1f1f;
-            position: relative;
+            max-width: 400px;
+            background-color: #202020;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
         }
 
         video {
             width: 100%;
-            height: auto;
             aspect-ratio: 16 / 9;
-            background-color: #000;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            background-color: black;
         }
 
-        #button-container {
-            width: 100%;
+        #controls {
             display: flex;
             justify-content: space-around;
-            flex-wrap: wrap;
+            width: 100%;
+            padding: 15px;
+            background-color: #121212;
         }
 
-        /* Botões com design aprimorado */
         .button {
-            padding: 12px 30px;
-            font-size: 18px;
-            cursor: pointer;
+            background: none;
             border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #ff4c4c, #ff7979);
-            color: white;
-            text-transform: uppercase;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background 0.3s, transform 0.1s;
-            margin: 10px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
         .button:hover {
-            background: linear-gradient(135deg, #e43e3e, #ff6363);
-            transform: scale(1.05);
+            transform: scale(1.2);
         }
 
         .button:active {
-            transform: scale(0.95);
+            transform: scale(1.1);
         }
 
-        /* Removendo sublinhado do link */
-        a.button {
-            text-decoration: none;
-        }
-
-        /* Indicador de status */
-        #status-indicator {
-            position: absolute;
-            top: -30px;
-            left: 10px;
+        #status {
+            padding: 10px;
             font-size: 14px;
+            color: #bbb;
+            text-align: center;
             font-style: italic;
-            color: white;
-            display: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #ff4c4c;
         }
 
         @media (max-width: 480px) {
-            video {
-                max-height: 30vh;
+            #app-container {
+                max-width: 100%;
             }
             .button {
-                font-size: 14px;
-                padding: 10px 20px;
+                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="fullscreen-container" onclick="toggleFullScreen()">
-        <div id="status-indicator"></div>
+    <div id="app-container">
         <video id="meuVideo" playsinline preload="auto"></video>
-        <div id="button-container">
-            <button id="playButton" class="button">Play</button>
-            <a href="tv.html" class="button">Live Channels</a>
+        <div id="controls">
+            <button id="playButton" class="button">
+                <i class="fas fa-play"></i>
+            </button>
+            <a href="https://www.africamono.it.ao/p/live-channel-2424.html" class="button">
+                <i class="fas fa-tv"></i>
+            </a>
         </div>
+        <div id="status">Carregando...</div>
     </div>
 
     <script>
@@ -120,7 +113,7 @@
         const videoDurations = [2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
-        const statusIndicator = document.getElementById('status-indicator');
+        const status = document.getElementById('status');
         const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
 
         let isStreaming = false;
@@ -143,10 +136,8 @@
         function changeVideo(index, startTime) {
             videoPlayer.src = videoSources[index];
             videoPlayer.currentTime = startTime;
-            videoPlayer.play().catch(error => {
-                console.error('Error playing video:', error);
-            });
-            updateStatusIndicator(false);
+            videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
+            updateStatus(false);
         }
 
         function autoplayNextVideo() {
@@ -155,38 +146,27 @@
             changeVideo(currentIndex, startTime);
         }
 
-        videoPlayer.addEventListener('ended', autoplayNextVideo);
-
-        window.addEventListener('load', function () {
-            const { index, startTime } = getSyncedVideoAndTime();
-            changeVideo(index, startTime);
-        });
+        function updateStatus(isLive) {
+            status.textContent = isLive ? 'Live' : 'Programas Gravados';
+        }
 
         function startStreaming() {
             if (!isStreaming) {
                 videoPlayer.pause();
                 videoPlayer.src = streamingUrl;
-                videoPlayer.play().catch(error => {
-                    console.error('Error playing stream:', error);
-                });
+                videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
                 isStreaming = true;
-                updateStatusIndicator(true);
+                updateStatus(true);
             }
         }
 
         function stopStreaming() {
             if (isStreaming) {
                 const { index, startTime } = getSyncedVideoAndTime();
-                videoPlayer.pause();
                 changeVideo(index, startTime);
                 isStreaming = false;
-                updateStatusIndicator(false);
+                updateStatus(false);
             }
-        }
-
-        function updateStatusIndicator(isLive) {
-            statusIndicator.style.display = 'block';
-            statusIndicator.textContent = isLive ? 'Live' : 'Recorded Programs';
         }
 
         function checkStreaming() {
@@ -199,37 +179,28 @@
                     stopStreaming();
                 }
             };
-            xhr.onerror = function () {
-                stopStreaming();
-            };
+            xhr.onerror = stopStreaming;
             xhr.send();
         }
 
         setInterval(checkStreaming, 1000);
 
-        playButton.addEventListener('click', function () {
+        playButton.addEventListener('click', () => {
             if (videoPlayer.paused) {
-                videoPlayer.play().then(() => {
-                    toggleFullScreen();
-                }).catch(error => {
-                    console.error('Error starting video:', error);
-                });
-            }
-        });
-
-        videoPlayer.addEventListener('dblclick', function () {
-            toggleFullScreen();
-        });
-
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.getElementById('fullscreen-container').requestFullscreen().catch(err => {
-                    console.error(`Erro ao habilitar tela cheia: ${err.message}`);
-                });
+                videoPlayer.play();
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
             } else {
-                document.exitFullscreen();
+                videoPlayer.pause();
+                playButton.innerHTML = '<i class="fas fa-play"></i>';
             }
-        }
+        });
+
+        videoPlayer.addEventListener('ended', autoplayNextVideo);
+
+        window.addEventListener('load', () => {
+            const { index, startTime } = getSyncedVideoAndTime();
+            changeVideo(index, startTime);
+        });
     </script>
 </body>
 </html>
