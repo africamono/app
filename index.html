@@ -5,16 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Player - Fullscreen</title>
     <style>
+        /* Estilos globais e tema dark */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+        }
+
         #fullscreen-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            max-width: 100%;
-            padding: 5px;
-            border-radius: 8px;
-            box-shadow: 0 0px 0px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            background-color: #1f1f1f;
             position: relative;
         }
 
@@ -24,30 +37,56 @@
             aspect-ratio: 16 / 9;
             background-color: #000;
             object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         #button-container {
-            margin-top: 8px;
             width: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
             flex-wrap: wrap;
         }
 
+        /* Botões com design aprimorado */
         .button {
-            padding: 5px 20px;
-            font-size: 16px;
+            padding: 12px 30px;
+            font-size: 18px;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            background-color: #ff4c4c;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ff4c4c, #ff7979);
             color: white;
-            transition: background-color 0.3s;
-            margin: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.1s;
+            margin: 10px;
         }
 
         .button:hover {
-            background-color: #e43e3e;
+            background: linear-gradient(135deg, #e43e3e, #ff6363);
+            transform: scale(1.05);
+        }
+
+        .button:active {
+            transform: scale(0.95);
+        }
+
+        /* Removendo sublinhado do link */
+        a.button {
+            text-decoration: none;
+        }
+
+        /* Indicador de status */
+        #status-indicator {
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            font-size: 14px;
+            font-style: italic;
+            color: white;
+            display: none;
         }
 
         @media (max-width: 480px) {
@@ -56,18 +95,8 @@
             }
             .button {
                 font-size: 14px;
-                padding: 8px 16px;
+                padding: 10px 20px;
             }
-        }
-
-        #status-indicator {
-            position: absolute;
-            top: -30px;
-            left: 10px;
-            font-size: 14px;
-            font-style: italic;
-            font-weight: normal;
-            display: none;
         }
     </style>
 </head>
