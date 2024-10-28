@@ -23,8 +23,6 @@
             background-color: #181818;
         }
 
-
-
         video {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -93,6 +91,7 @@
         const videoDurations = [2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
+        const controls = document.getElementById('controls');
         const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
 
         let isStreaming = false;
@@ -172,6 +171,21 @@
         window.addEventListener('load', () => {
             const { index, startTime } = getSyncedVideoAndTime();
             changeVideo(index, startTime);
+            
+            // Esconder os controles após 5 segundos
+            setTimeout(() => {
+                controls.style.display = 'none';
+            }, 5000);
+        });
+
+        // Mostrar os controles quando o mouse está sobre o app-container
+        document.getElementById('app-container').addEventListener('mouseover', () => {
+            controls.style.display = 'flex'; // Mostra os controles
+        });
+
+        // Esconder os controles quando o mouse sair do app-container
+        document.getElementById('app-container').addEventListener('mouseout', () => {
+            controls.style.display = 'none'; // Esconde os controles
         });
 
         function toggleFullScreen() {
@@ -186,3 +200,4 @@
     </script>
 </body>
 </html>
+
