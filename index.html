@@ -24,6 +24,13 @@
             position: relative;
         }
 
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px; /* Limite de largura para centralizar */
+        }
+
         video {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -38,14 +45,7 @@
             background-color: #121212;
             position: fixed;
             bottom: 0;
-            transition: opacity 0.5s ease;
-            opacity: 1;
             pointer-events: auto;
-        }
-
-        #controls.hidden {
-            opacity: 0;
-            pointer-events: none;
         }
 
         .button {
@@ -79,7 +79,7 @@
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
         <video id="meuVideo" playsinline preload="auto"></video>
-        <div id="controls" class="hidden">
+        <div id="controls">
             <button id="playButton" class="button">
                 <i class="fas fa-play"></i>
             </button>
@@ -89,11 +89,11 @@
             <a href="https://www.africamono.it.ao" class="button">
                 <i class="fas fa-globe"></i>
             </a>
+            <a href="https://www.exemplo.com/radio" class="button"> <!-- Botão de rádio -->
+                <i class="fas fa-radio"></i>
+            </a>
             <a href="tel:+123456789" class="button"> <!-- Botão de telefone -->
                 <i class="fas fa-phone"></i>
-            </a>
-            <a href="https://www.exemplo.com/radio" class="button"> <!-- Botão de rádio com link atualizado -->
-                <i class="fas fa-radio"></i>
             </a>
         </div>
     </div>
@@ -190,24 +190,26 @@
             changeVideo(index, startTime);
         });
 
-        // Mostrar os controles quando o mouse está sobre o app-container
-        document.getElementById('app-container').addEventListener('mouseover', () => {
-            controls.classList.remove('hidden'); // Mostra os controles
-        });
-
-        // Esconder os controles quando o mouse sair do app-container
-        document.getElementById('app-container').addEventListener('mouseout', () => {
-            controls.classList.add('hidden'); // Esconde os controles
-        });
-
         // Esconder os controles ao entrar em tela cheia
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
-                controls.classList.add('hidden'); // Esconde os controles
+                controls.style.display = 'none'; // Esconde os controles
             } else {
-                controls.classList.remove('hidden'); // Mostra os controles
+                controls.style.display = 'flex'; // Mostra os controles
             }
         });
+
+        // Esconder os controles quando em orientação vertical
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                controls.style.display = 'none'; // Esconde os controles em vertical
+            } else {
+                controls.style.display = 'flex'; // Mostra os controles em horizontal
+            }
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation(); // Chama a função ao carregar a página
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
