@@ -15,26 +15,47 @@
             font-family: 'Arial', sans-serif;
         }
 
+        html, body {
+            height: 100%;
+            width: 100%;
+            background-color: #181818;
+            overflow: hidden;
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: #181818;
+        }
+
+        #app-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         video {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            height: 100%;
+            object-fit: contain; /* Ajusta proporção sem distorção */
             background-color: black;
         }
 
         #controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             display: flex;
             justify-content: space-around;
-            width: 100%;
+            align-items: center;
             padding: 15px;
             background-color: #121212;
+            transition: opacity 0.3s;
         }
 
         .button {
@@ -55,10 +76,6 @@
         }
 
         @media (max-width: 480px) {
-            #app-container {
-                max-width: 100%;
-            }
-
             .button {
                 font-size: 20px;
             }
@@ -68,93 +85,39 @@
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
         <video id="meuVideo" playsinline preload="auto"></video>
-        <div id="controls">
-            <button id="playButton" class="button">
-                <i class="fas fa-play"></i>
-            </button>
-            <a href="tv.html" class="button">
-                <i class="fas fa-tv"></i>
-            </a>
-            <a href="https://www.africamono.it.ao" class="button">
-                <i class="fas fa-globe"></i>
-            </a>
-        </div>
+    </div>
+
+    <div id="controls">
+        <button id="playButton" class="button">
+            <i class="fas fa-play"></i>
+        </button>
+
+        <a href="tv.html" class="button">
+            <i class="fas fa-tv"></i>
+        </a>
+
+        <a href="https://www.africamono.it.ao" class="button">
+            <i class="fas fa-globe"></i>
+        </a>
+
+        <!-- Link para rádio -->
+        <a href="radio.html" target="_blank" class="button">
+            <i class="fas fa-radio"></i>
+        </a>
+
+        <!-- Link para telefone (pode ser um número de telefone com tel:) -->
+        <a href="tel:+244955520530" class="button">
+            <i class="fas fa-phone"></i>
+        </a>
     </div>
 
     <script>
-        const videoSources = [
-            'https://zggg98sgwbg1gh.bitchute.com/OkD3fEQ7n2eI/WJZQIxw4r9bn.mp4',
-            'https://seed305.bitchute.com/OkD3fEQ7n2eI/M0tlZveG084G.mp4',
-            'https://seed122.bitchute.com/OkD3fEQ7n2eI/YMNuSONlLHMC.mp4'
-        ];
-
-        const videoDurations = [2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
         const controls = document.getElementById('controls');
         const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
 
         let isStreaming = false;
-        let currentIndex = 0;
-
-        function getSyncedVideoAndTime() {
-            const now = Math.floor(Date.now() / 1000);
-            const totalDuration = videoDurations.reduce((a, b) => a + b, 0);
-            const syncedTime = now % totalDuration;
-
-            let accumulatedTime = 0;
-            for (let i = 0; i < videoSources.length; i++) {
-                if (syncedTime < accumulatedTime + videoDurations[i]) {
-                    return { index: i, startTime: syncedTime - accumulatedTime };
-                }
-                accumulatedTime += videoDurations[i];
-            }
-        }
-
-        function changeVideo(index, startTime) {
-            videoPlayer.src = videoSources[index];
-            videoPlayer.currentTime = startTime;
-            videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
-        }
-
-        function autoplayNextVideo() {
-            currentIndex = (currentIndex + 1) % videoSources.length;
-            const { startTime } = getSyncedVideoAndTime();
-            changeVideo(currentIndex, startTime);
-        }
-
-        function startStreaming() {
-            if (!isStreaming) {
-                videoPlayer.pause();
-                videoPlayer.src = streamingUrl;
-                videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
-                isStreaming = true;
-            }
-        }
-
-        function stopStreaming() {
-            if (isStreaming) {
-                const { index, startTime } = getSyncedVideoAndTime();
-                changeVideo(index, startTime);
-                isStreaming = false;
-            }
-        }
-
-        function checkStreaming() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('HEAD', streamingUrl, true);
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 400) {
-                    startStreaming();
-                } else {
-                    stopStreaming();
-                }
-            };
-            xhr.onerror = stopStreaming;
-            xhr.send();
-        }
-
-        setInterval(checkStreaming, 1000);
 
         playButton.addEventListener('click', () => {
             if (videoPlayer.paused) {
@@ -166,38 +129,29 @@
             }
         });
 
-        videoPlayer.addEventListener('ended', autoplayNextVideo);
-
-        window.addEventListener('load', () => {
-            const { index, startTime } = getSyncedVideoAndTime();
-            changeVideo(index, startTime);
-            
-            // Esconder os controles após 5 segundos
-            setTimeout(() => {
-                controls.style.display = 'none';
-            }, 5000);
-        });
-
-        // Mostrar os controles quando o mouse está sobre o app-container
-        document.getElementById('app-container').addEventListener('mouseover', () => {
-            controls.style.display = 'flex'; // Mostra os controles
-        });
-
-        // Esconder os controles quando o mouse sair do app-container
-        document.getElementById('app-container').addEventListener('mouseout', () => {
-            controls.style.display = 'none'; // Esconde os controles
-        });
-
         function toggleFullScreen() {
+            const appContainer = document.getElementById('app-container');
             if (!document.fullscreenElement) {
-                document.getElementById('app-container').requestFullscreen().catch(err => {
+                appContainer.requestFullscreen().catch(err => {
                     console.error(`Erro ao habilitar tela cheia: ${err.message}`);
                 });
             } else {
                 document.exitFullscreen();
             }
         }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                controls.style.opacity = '0'; // Esconde os controles em fullscreen
+            } else {
+                controls.style.opacity = '1'; // Mostra os controles ao sair do fullscreen
+            }
+        });
+
+        window.addEventListener('load', () => {
+            videoPlayer.src = 'https://zggg98sgwbg1gh.bitchute.com/OkD3fEQ7n2eI/WJZQIxw4r9bn.mp4';
+            videoPlayer.play().catch(err => console.error('Erro ao iniciar o vídeo:', err));
+        });
     </script>
 </body>
 </html>
-
