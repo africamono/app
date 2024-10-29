@@ -199,12 +199,12 @@
             }
         });
 
-        // Esconder os controles quando em orientação vertical
+        // Esconder os controles quando em orientação horizontal
         function checkOrientation() {
-            if (window.innerHeight > window.innerWidth) {
-                controls.style.display = 'none'; // Esconde os controles em vertical
+            if (window.innerHeight < window.innerWidth) {
+                controls.style.display = 'none'; // Esconde os controles em horizontal
             } else {
-                controls.style.display = 'flex'; // Mostra os controles em horizontal
+                controls.style.display = 'flex'; // Mostra os controles em vertical
             }
         }
 
