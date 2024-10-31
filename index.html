@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Player App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <style>
         /* Estilos gerais */
         * {
@@ -28,7 +27,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 800px; /* Limite de largura para centralizar */
+            max-width: 800px;
         }
 
         video {
@@ -52,7 +51,7 @@
             background: none;
             border: none;
             color: #fff;
-            font-size: 30px; /* Aumentado o tamanho dos botões */
+            font-size: 30px;
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -69,9 +68,8 @@
             #app-container {
                 max-width: 100%;
             }
-
             .button {
-                font-size: 20px; /* Tamanho ajustado para dispositivos menores */
+                font-size: 20px;
             }
         }
     </style>
@@ -89,8 +87,7 @@
             <a href="https://www.africamono.it.ao" class="button">
                 <i class="fas fa-globe"></i>
             </a>
-            
-            <a href="tel:+244955520530" class="button"> <!-- Botão de telefone -->
+            <a href="tel:+244955520530" class="button">
                 <i class="fas fa-phone"></i>
             </a>
         </div>
@@ -98,16 +95,13 @@
 
     <script>
         const videoSources = [
-            'https://seed163.bitchute.com/OkD3fEQ7n2eI/mQtYcSY4zeg1.mp4'
-            'https://zggg98sgwbg1gh.bitchute.com/OkD3fEQ7n2eI/WJZQIxw4r9bn.mp4',
-            'https://seed305.bitchute.com/OkD3fEQ7n2eI/M0tlZveG084G.mp4',
-            'https://seed122.bitchute.com/OkD3fEQ7n2eI/YMNuSONlLHMC.mp4'
+            'https://seed163.bitchute.com/OkD3fEQ7n2eI/mQtYcSY4zeg1.mp4',
+          
         ];
 
-        const videoDurations = [2000, 2000, 2000,2000];
+        const videoDurations = [2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
-        const controls = document.getElementById('controls');
         const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
 
         let isStreaming = false;
@@ -189,26 +183,24 @@
             changeVideo(index, startTime);
         });
 
-        // Esconder os controles ao entrar em tela cheia
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
-                controls.style.display = 'none'; // Esconde os controles
+                controls.style.display = 'none';
             } else {
-                controls.style.display = 'flex'; // Mostra os controles
+                controls.style.display = 'flex';
             }
         });
 
-        // Esconder os controles quando em orientação horizontal
         function checkOrientation() {
             if (window.innerHeight < window.innerWidth) {
-                controls.style.display = 'none'; // Esconde os controles em horizontal
+                controls.style.display = 'none';
             } else {
-                controls.style.display = 'flex'; // Mostra os controles em vertical
+                controls.style.display = 'flex';
             }
         }
 
         window.addEventListener('resize', checkOrientation);
-        checkOrientation(); // Chama a função ao carregar a página
+        checkOrientation();
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
