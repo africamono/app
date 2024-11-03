@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -102,18 +102,18 @@
     /* Ajustes para telas menores */
     @media (max-width: 480px) {
       .channel {
-        width: calc(25% - 10px); /* Botões menores para estilo de ícone */
+        width: calc(25% - 10px);
         padding: 10px;
         border-radius: 8px;
       }
 
       .channel-icon {
-        font-size: 24px; /* Ícone menor */
+        font-size: 24px;
         margin-bottom: 3px;
       }
 
       .channel-name {
-        font-size: 0.75em; /* Texto menor */
+        font-size: 0.75em;
       }
 
       .channel:active {
@@ -140,12 +140,15 @@
 
 <script>
   const channels = [
+    { name: "MUSIC", icon: "🎵", stream: "https://example.com/music.mp4" },
     { name: "CINE", icon: "🎬", stream: "https://example.com/cine.mp4" },
     { name: "NEWS", icon: "📰", stream: "https://example.com/news.mp4" },
     { name: "SPORT", icon: "⚽", stream: "https://example.com/sport.mp4" },
     { name: "GOSPEL", icon: "⛪", stream: "https://example.com/gospel.mp4" },
     { name: "KIDS", icon: "👶", stream: "https://example.com/kids.mp4" },
-    { name: "YouTube", icon: "📺", stream: "https://example.com/youtube.mp4" }
+    { name: "YOUTUBE", icon: "📺", link: "https://www.youtube.com" },
+    { name: "RECORDED", icon: "📚", link: "https://example.com/programs" },
+    { name: "REDES SOCIAIS", icon: "🌐", link: "https://example.com/redes-sociais" }
   ];
 
   const channelsContainer = document.getElementById('channels-container');
@@ -156,13 +159,28 @@
   function createChannelElement(channel) {
     const channelElement = document.createElement('div');
     channelElement.className = 'channel';
-    channelElement.innerHTML = `
-      <div class="channel-icon">${channel.icon}</div>
-      <div class="channel-info">
-        <div class="channel-name">${channel.name}</div>
-      </div>
-    `;
-    channelElement.addEventListener('click', () => playChannel(channel));
+
+    if (channel.link) {
+      // Canal com link externo
+      channelElement.innerHTML = `
+        <a href="${channel.link}" target="_blank" style="text-decoration: none; color: inherit;">
+          <div class="channel-icon">${channel.icon}</div>
+          <div class="channel-info">
+            <div class="channel-name">${channel.name}</div>
+          </div>
+        </a>
+      `;
+    } else {
+      // Canal com stream de vídeo
+      channelElement.innerHTML = `
+        <div class="channel-icon">${channel.icon}</div>
+        <div class="channel-info">
+          <div class="channel-name">${channel.name}</div>
+        </div>
+      `;
+      channelElement.addEventListener('click', () => playChannel(channel));
+    }
+
     return channelElement;
   }
 
@@ -185,3 +203,4 @@
 
 </body>
 </html>
+
