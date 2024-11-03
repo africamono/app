@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -13,8 +13,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #121212; /* Fundo escuro */
-      color: #ffffff; /* Texto claro */
+      background-color: #121212;
+      color: #ffffff;
     }
 
     .container {
@@ -36,40 +36,40 @@
     }
 
     .channel {
-      width: calc(20% - 10px); /* Tamanho padrão dos botões */
-      background-color: #FFA500; /* Laranja */
-      color: #ffffff; /* Texto branco */
+      width: calc(20% - 10px);
+      background-color: transparent;
+      color: #ffffff;
       border-radius: 5px;
       overflow: hidden;
       transition: transform 0.3s ease;
       cursor: pointer;
-      transform: scale(0.85); /* Botões ainda menores */
-      text-align: center; /* Centraliza o texto */
+      transform: scale(0.85);
+      text-align: center;
+      padding: 15px;
+      border: 1px solid #ffffff;
     }
 
     .channel:hover {
       transform: scale(0.90);
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    .channel img {
-      width: 100%;
-      height: auto; /* Ajusta a altura automaticamente */
-      max-height: 80px; /* Define uma altura máxima para manter proporções */
-      object-fit: cover;
+    .channel:active {
+      transform: scale(0.75);
+    }
+
+    .channel-icon {
+      font-size: 40px;
+      margin-bottom: 5px;
     }
 
     .channel-info {
-      padding: 5px; /* Espaçamento reduzido */
+      padding: 5px;
     }
 
     .channel-name {
       font-weight: bold;
-      margin-bottom: 3px; /* Reduz o espaço */
-    }
-
-    .channel-description {
-      font-size: 0.8em; /* Texto menor */
-      color: #bdc3c7;
+      margin-bottom: 3px;
     }
 
     #player {
@@ -99,28 +99,14 @@
       cursor: pointer;
     }
 
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .channel {
-        width: calc(50% - 10px); /* 2 botões por linha em telas menores */
-      }
-
-      .channel img {
-        max-height: 60px; /* Ajuste a altura para botões menores */
-      }
-    }
-
     @media (max-width: 480px) {
       .channel {
-        width: calc(100% - 10px); /* Largura total em telas pequenas */
+        width: calc(100% - 10px);
+        transition: transform 0.1s ease;
       }
 
-      .channel img {
-        max-height: 50px; /* Ajuste a altura para botões ainda menores */
-      }
-
-      #close-player {
-        font-size: 25px;
+      .channel:active {
+        transform: scale(0.9);
       }
     }
   </style>
@@ -143,30 +129,12 @@
 
 <script>
   const channels = [
-    {
-      name: "MUSIC",
-      description: "",
-      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
-      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
-    },
-    {
-      name: "CINE",
-      description: "",
-      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
-      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
-    },
-    {
-      name: "NEWS",
-      description: "",
-      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
-      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
-    },
-    {
-      name: "KIDS",
-      description: "",
-      image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFHhKx6Q0UtT8ov1s1cmwh2TItvYrqysJi5Njkdrk7oljCQiNjaa-5hkbbkHG667OWfUUcUYmHOJ1FUprkQkinp0tfHB2zIiSzDMsRYXbvxPbAfbS1hGlCNt6ddfrtFxQlbT9KId0ScKnMHhdn2KYo89xFWUHoY7VoQhxow958HfVbEP0lS0DXPiKfQk/s2048/463183831_876489291294702_2418431135883688443_n.jpg",
-      stream: "https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4"
-    }
+    { name: "CINE", icon: "🎬", stream: "https://example.com/cine.mp4" },
+    { name: "NEWS", icon: "📰", stream: "https://example.com/news.mp4" },
+    { name: "SPORT", icon: "⚽", stream: "https://example.com/sport.mp4" },
+    { name: "GOSPEL", icon: "⛪", stream: "https://example.com/gospel.mp4" },
+    { name: "KIDS", icon: "👶", stream: "https://example.com/kids.mp4" },       <!-- Botão Kids -->
+    { name: "YouTube", icon: "📺", stream: "https://example.com/youtube.mp4" }  <!-- Botão YouTube -->
   ];
 
   const channelsContainer = document.getElementById('channels-container');
@@ -178,10 +146,9 @@
     const channelElement = document.createElement('div');
     channelElement.className = 'channel';
     channelElement.innerHTML = `
-      <img alt="${channel.name} channel thumbnail" src="${channel.image}">
+      <div class="channel-icon">${channel.icon}</div>
       <div class="channel-info">
         <div class="channel-name">${channel.name}</div>
-        <div class="channel-description">${channel.description}</div>
       </div>
     `;
     channelElement.addEventListener('click', () => playChannel(channel));
