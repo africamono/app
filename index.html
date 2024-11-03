@@ -64,24 +64,24 @@
             transform: scale(1.1);
         }
 
-        /* Estilo do círculo de progresso */
-        #loadingOverlay {
+        /* Estilos do círculo de progresso */
+        #loading {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            visibility: visible; /* Sempre visível até que o conteúdo carregue */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid #f3f3f3; /* Cor de fundo do círculo */
+            border-top: 16px solid orange; /* Cor da parte giratória */
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+            display: none; /* Inicialmente escondido */
         }
 
-        .progress-circle {
-            font-size: 50px;
-            color: orange; /* Define o círculo de progresso como laranja */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 480px) {
@@ -95,27 +95,27 @@
     </style>
 </head>
 <body>
+    <div id="loading"></div>
     <div id="app-container" onclick="toggleFullScreen()">
         <video id="meuVideo" playsinline preload="auto"></video>
         <div id="controls">
-            <button id="playButton" class="button" onclick="showLoadingOverlay()">
+            <button id="playButton" class="button">
                 <i class="fas fa-play"></i>
             </button>
-            <a href="tv.html" class="button" onclick="showLoadingOverlay()">
+            <a href="tv.html" class="button">
                 <i class="fas fa-tv"></i>
             </a>
-            <a href="https://www.africamono.it.ao" class="button" onclick="showLoadingOverlay()">
+            <a href="https://www.africamono.it.ao" class="button">
                 <i class="fas fa-globe"></i>
             </a>
             <a href="tel:+244955520530" class="button">
                 <i class="fas fa-phone"></i>
             </a>
+            <!-- Novo botão do YouTube -->
+            <a href="https://www.youtube.com/@SHOWMONO" class="button">
+                <i class="fab fa-youtube"></i>
+            </a>
         </div>
-    </div>
-
-    <!-- Círculo de progresso para exibir durante o carregamento -->
-    <div id="loadingOverlay">
-        <i class="fas fa-circle-notch fa-spin progress-circle"></i>
     </div>
 
     <script>
@@ -127,29 +127,77 @@
             'https://seed167.bitchute.com/OkD3fEQ7n2eI/vY1azvISNqC8.mp4'
         ];
 
+        const videoDurations = [2000, 2000, 2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
+        const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
+        const loadingIndicator = document.getElementById('loading');
+
+        let isStreaming = false;
         let currentIndex = 0;
 
-        function showLoadingOverlay() {
-            document.getElementById('loadingOverlay').style.visibility = 'visible';
+        function getSyncedVideoAndTime() {
+            const now = Math.floor(Date.now() / 1000);
+            const totalDuration = videoDurations.reduce((a, b) => a + b, 0);
+            const syncedTime = now % totalDuration;
+
+            let accumulatedTime = 0;
+            for (let i = 0; i < videoSources.length; i++) {
+                if (syncedTime < accumulatedTime + videoDurations[i]) {
+                    return { index: i, startTime: syncedTime - accumulatedTime };
+                }
+                accumulatedTime += videoDurations[i];
+            }
         }
 
-        function hideLoadingOverlay() {
-            document.getElementById('loadingOverlay').style.visibility = 'hidden';
+        function changeVideo(index, startTime) {
+            videoPlayer.src = videoSources[index];
+            videoPlayer.currentTime = startTime;
+            videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
         }
 
-        // Mostra o círculo de progresso ao iniciar o carregamento de vídeo
-        videoPlayer.addEventListener('loadstart', showLoadingOverlay);
+        function autoplayNextVideo() {
+            currentIndex = (currentIndex + 1) % videoSources.length;
+            const { startTime } = getSyncedVideoAndTime();
+            changeVideo(currentIndex, startTime);
+        }
 
-        // Esconde o círculo apenas quando o vídeo termina de carregar
-        videoPlayer.addEventListener('canplay', hideLoadingOverlay);
+        function startStreaming() {
+            if (!isStreaming) {
+                videoPlayer.pause();
+                videoPlayer.src = streamingUrl;
+                videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
+                isStreaming = true;
+            }
+        }
 
-        // Alternar o estado de reprodução do vídeo e exibir o progresso durante o carregamento
+        function stopStreaming() {
+            if (isStreaming) {
+                const { index, startTime } = getSyncedVideoAndTime();
+                changeVideo(index, startTime);
+                isStreaming = false;
+            }
+        }
+
+        function checkStreaming() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('HEAD', streamingUrl, true);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    startStreaming();
+                } else {
+                    stopStreaming();
+                }
+            };
+            xhr.onerror = stopStreaming;
+            xhr.send();
+        }
+
+        setInterval(checkStreaming, 1000);
+
         playButton.addEventListener('click', () => {
-            showLoadingOverlay();
             if (videoPlayer.paused) {
-                videoPlayer.play().catch(() => {});
+                videoPlayer.play();
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
             } else {
                 videoPlayer.pause();
@@ -157,21 +205,32 @@
             }
         });
 
-        // Carregar o próximo vídeo ao final e exibir o círculo de progresso
-        videoPlayer.addEventListener('ended', () => {
-            currentIndex = (currentIndex + 1) % videoSources.length;
-            videoPlayer.src = videoSources[currentIndex];
-            videoPlayer.load();  // Força o carregamento do próximo vídeo
-            videoPlayer.play();
-            showLoadingOverlay();
+        videoPlayer.addEventListener('ended', autoplayNextVideo);
+
+        window.addEventListener('load', () => {
+            const { index, startTime } = getSyncedVideoAndTime();
+            changeVideo(index, startTime);
+            loadingIndicator.style.display = 'none'; // Esconder o indicador de carregamento ao carregar o vídeo
         });
 
-        // Carregar o primeiro vídeo com círculo de progresso ativo
-        window.addEventListener('load', () => {
-            videoPlayer.src = videoSources[currentIndex];
-            videoPlayer.load();
-            showLoadingOverlay();
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                controls.style.display = 'none';
+            } else {
+                controls.style.display = 'flex';
+            }
         });
+
+        function checkOrientation() {
+            if (window.innerHeight < window.innerWidth) {
+                controls.style.display = 'none';
+            } else {
+                controls.style.display = 'flex';
+            }
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
@@ -182,6 +241,11 @@
                 document.exitFullscreen();
             }
         }
+
+        // Mostrar o círculo de carregamento ao iniciar o carregamento da página
+        window.addEventListener('beforeunload', () => {
+            loadingIndicator.style.display = 'block';
+        });
     </script>
 </body>
 </html>
