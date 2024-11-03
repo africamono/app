@@ -38,20 +38,20 @@
     .channel {
       width: calc(20% - 10px);
       background-color: transparent;
-      color: #ffffff;
-      border-radius: 5px;
+      color: #FFA500;
+      border-radius: 10px;
       overflow: hidden;
       transition: transform 0.3s ease;
       cursor: pointer;
       transform: scale(0.85);
       text-align: center;
       padding: 15px;
-      border: 1px solid #ffffff;
+      border: 2px solid #FFA500;
     }
 
     .channel:hover {
       transform: scale(0.90);
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 165, 0, 0.1);
     }
 
     .channel:active {
@@ -99,10 +99,21 @@
       cursor: pointer;
     }
 
+    /* Ajustes para telas menores */
     @media (max-width: 480px) {
       .channel {
-        width: calc(100% - 10px);
-        transition: transform 0.1s ease;
+        width: calc(25% - 10px); /* Botões menores para estilo de ícone */
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .channel-icon {
+        font-size: 24px; /* Ícone menor */
+        margin-bottom: 3px;
+      }
+
+      .channel-name {
+        font-size: 0.75em; /* Texto menor */
       }
 
       .channel:active {
@@ -133,8 +144,8 @@
     { name: "NEWS", icon: "📰", stream: "https://example.com/news.mp4" },
     { name: "SPORT", icon: "⚽", stream: "https://example.com/sport.mp4" },
     { name: "GOSPEL", icon: "⛪", stream: "https://example.com/gospel.mp4" },
-    { name: "KIDS", icon: "👶", stream: "https://example.com/kids.mp4" },       <!-- Botão Kids -->
-    { name: "YouTube", icon: "📺", stream: "https://example.com/youtube.mp4" }  <!-- Botão YouTube -->
+    { name: "KIDS", icon: "👶", stream: "https://example.com/kids.mp4" },
+    { name: "YouTube", icon: "📺", stream: "https://example.com/youtube.mp4" }
   ];
 
   const channelsContainer = document.getElementById('channels-container');
