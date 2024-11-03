@@ -28,6 +28,7 @@
             flex-direction: column;
             width: 100%;
             max-width: 800px;
+            position: relative; /* Para permitir que o #loading se posicione em relação a ele */
         }
 
         video {
@@ -66,7 +67,7 @@
 
         /* Estilos do círculo de progresso */
         #loading {
-            position: fixed;
+            position: absolute; /* Alterado para absolute */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -245,6 +246,16 @@
         // Mostrar o círculo de carregamento ao iniciar o carregamento da página
         window.addEventListener('beforeunload', () => {
             loadingIndicator.style.display = 'block';
+        });
+
+        // Manter o histórico para o botão Voltar do telefone
+        window.addEventListener('load', function() {
+            history.pushState(null, document.title, location.href);
+        });
+
+        window.addEventListener('popstate', function(event) {
+            // Redirecionar para a página inicial ao clicar em Voltar
+            window.location.href = 'index.html'; // Substitua 'index.html' pelo nome da sua página inicial
         });
     </script>
 </body>
