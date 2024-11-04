@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>SEND YOU VIDEO</title>
     <style>
         /* Configuração de estilo geral da página */
@@ -15,14 +15,16 @@
             color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
+            padding: 10px; /* Adicionado para evitar que o conteúdo encoste nas bordas */
         }
 
         /* Estilo do formulário e centralização */
         form {
-            padding: 0px;
-            border-radius: 0px;
-            box-shadow: 0 0px 0px rgba(0, 0, 0, 0.4);
-            width: 150px;
+            padding: 0;
+            border-radius: 5px; /* Leve arredondamento */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            width: 100%; /* Largura total */
+            max-width: 400px; /* Largura máxima para telas pequenas */
             text-align: center;
         }
 
@@ -36,12 +38,12 @@
         /* Estilo dos campos de entrada */
         .form-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Espaçamento reduzido */
         }
 
         .form-group input {
             width: 100%;
-            padding: 15px;
+            padding: 12px; /* Ajustado para melhor visualização em dispositivos móveis */
             padding-left: 10px;
             background-color: transparent; /* Fundo transparente */
             color: #ffffff;
@@ -53,7 +55,7 @@
         .form-group label {
             position: absolute;
             top: 50%;
-            left: 15px;
+            left: 10px;
             transform: translateY(-50%);
             color: #888;
             font-size: 0.9em;
