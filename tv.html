@@ -4,27 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Player de Canais</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body, html {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #121212;
-      color: #ffffff;
+    }
+
+    .loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed; /* Fica fixo na tela */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(18, 18, 18, 0.9); /* Fundo semi-transparente */
+      z-index: 9999; /* Garante que o loader fique acima de outros elementos */
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      border: 10px solid #FFA500;
+      border-top: 10px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .container {
-      display: flex;
+      display: none; /* Oculta o conteúdo inicialmente */
       flex-direction: column;
       justify-content: center;
       align-items: center;
       width: 100%;
       max-width: 1200px;
       padding: 10px;
+    }
+
+    header {
+      width: 100%;
+      position: relative;
+    }
+
+    .header-image {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
     }
 
     main {
@@ -47,6 +86,11 @@
       text-align: center;
       padding: 15px;
       border: 2px solid #FFA500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      text-decoration: none;
     }
 
     .channel:hover {
@@ -60,46 +104,16 @@
 
     .channel-icon {
       font-size: 40px;
-      margin-bottom: 5px;
-    }
-
-    .channel-info {
-      padding: 5px;
+      margin-bottom: 10px;
+      position: relative;
     }
 
     .channel-name {
       font-weight: bold;
-      margin-bottom: 3px;
+      font-size: 0.9em;
+      color: inherit;
     }
 
-    #player {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    #player video {
-      max-width: 90%;
-      max-height: 90%;
-    }
-
-    #close-player {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 30px;
-      color: white;
-      cursor: pointer;
-    }
-
-    /* Ajustes para telas menores */
     @media (max-width: 480px) {
       .channel {
         width: calc(25% - 10px);
@@ -109,7 +123,7 @@
 
       .channel-icon {
         font-size: 24px;
-        margin-bottom: 3px;
+        margin-bottom: 5px;
       }
 
       .channel-name {
@@ -124,77 +138,55 @@
 </head>
 <body>
 
+<div class="loader">
+  <div class="circle"></div>
+</div>
+
 <div class="container">
+  <header>
+    <img src="we are.png" alt="We Are" class="header-image">
+  </header>
   <main id="channels-container">
     <!-- Canais serão adicionados dinamicamente via JavaScript -->
   </main>
 </div>
 
-<div id="player">
-  <span id="close-player">&times;</span>
-  <video id="video-player" controls>
-    <source src="" type="video/mp4">
-    Seu navegador não suporta o elemento de vídeo.
-  </video>
-</div>
-
 <script>
+  // Simula um carregamento de 5 segundos
+  setTimeout(() => {
+    document.querySelector('.loader').style.display = 'none'; // Esconde o loader
+    document.querySelector('.container').style.display = 'flex'; // Mostra o conteúdo
+  }, 5000); // 5000 milissegundos = 5 segundos
+
   const channels = [
-    { name: "MUSIC", icon: "🎵", stream: "https://example.com/music.mp4" },
-    { name: "CINE", icon: "🎬", stream: "https://example.com/cine.mp4" },
-    { name: "NEWS", icon: "📰", stream: "https://example.com/news.mp4" },
-    { name: "SPORT", icon: "⚽", stream: "https://example.com/sport.mp4" },
-    { name: "GOSPEL", icon: "⛪", stream: "https://example.com/gospel.mp4" },
-    { name: "KIDS", icon: "👶", stream: "https://example.com/kids.mp4" },
-    { name: "YOUTUBE", icon: "📺", link: "https://www.youtube.com" },
-    { name: "RECORDED", icon: "📚", link: "https://example.com/programs" },
-    { name: "REDES SOCIAIS", icon: "🌐", link: "https://example.com/redes-sociais" }
+    { name: "MUSIC", icon: "fas fa-music", htmlFile: "music.html" },
+    { name: "CINE", icon: "fas fa-film", htmlFile: "cine.html" },
+    { name: "NEWS", icon: "fas fa-newspaper", htmlFile: "news.html" },
+    { name: "SPORT", icon: "fas fa-futbol", htmlFile: "sport.html" },
+    { name: "GOSPEL", icon: "fas fa-church", htmlFile: "gospel.html" },
+    { name: "KIDS", icon: "fas fa-child", htmlFile: "kids.html" },
+    { name: "YOUTUBE", icon: "fab fa-youtube", htmlFile: "youtube.html" },
+    { name: "SEND VIDEO", icon: "fas fa-book", htmlFile: "send.html" },
+    { name: "ABOUT", icon: "fas fa-globe", htmlFile: "redes-sociais.html" }
   ];
 
   const channelsContainer = document.getElementById('channels-container');
-  const player = document.getElementById('player');
-  const videoPlayer = document.getElementById('video-player');
-  const closePlayer = document.getElementById('close-player');
 
   function createChannelElement(channel) {
     const channelElement = document.createElement('div');
     channelElement.className = 'channel';
 
-    if (channel.link) {
-      // Canal com link externo
-      channelElement.innerHTML = `
-        <a href="${channel.link}" target="_blank" style="text-decoration: none; color: inherit;">
-          <div class="channel-icon">${channel.icon}</div>
-          <div class="channel-info">
-            <div class="channel-name">${channel.name}</div>
-          </div>
-        </a>
-      `;
-    } else {
-      // Canal com stream de vídeo
-      channelElement.innerHTML = `
-        <div class="channel-icon">${channel.icon}</div>
-        <div class="channel-info">
-          <div class="channel-name">${channel.name}</div>
-        </div>
-      `;
-      channelElement.addEventListener('click', () => playChannel(channel));
-    }
+    channelElement.innerHTML = `
+      <div class="channel-icon"><i class="${channel.icon}"></i></div>
+      <div class="channel-name">${channel.name}</div>
+    `;
+
+    channelElement.addEventListener('click', function() {
+      window.location.href = channel.htmlFile;
+    });
 
     return channelElement;
   }
-
-  function playChannel(channel) {
-    videoPlayer.src = channel.stream;
-    player.style.display = 'flex';
-    videoPlayer.play();
-  }
-
-  closePlayer.addEventListener('click', () => {
-    player.style.display = 'none';
-    videoPlayer.pause();
-    videoPlayer.src = '';
-  });
 
   channels.forEach(channel => {
     channelsContainer.appendChild(createChannelElement(channel));
@@ -203,4 +195,3 @@
 
 </body>
 </html>
-
