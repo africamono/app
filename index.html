@@ -22,13 +22,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      position: fixed; /* Fica fixo na tela */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(18, 18, 18, 0.9); /* Fundo semi-transparente */
-      z-index: 9999; /* Garante que o loader fique acima de outros elementos */
+      background-color: rgba(18, 18, 18, 0.9);
+      z-index: 9999;
     }
 
     .circle {
@@ -46,7 +46,7 @@
     }
 
     .container {
-      display: none; /* Oculta o conteúdo inicialmente */
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -144,7 +144,7 @@
 
 <div class="container">
   <header>
-    <img src="we are.png" alt="We Are" class="header-image">
+    <img src="we are1.png" alt="We Are" class="header-image">
   </header>
   <main id="channels-container">
     <!-- Canais serão adicionados dinamicamente via JavaScript -->
@@ -165,9 +165,9 @@
     { name: "SPORT", icon: "fas fa-futbol", htmlFile: "sport.html" },
     { name: "GOSPEL", icon: "fas fa-church", htmlFile: "gospel.html" },
     { name: "KIDS", icon: "fas fa-child", htmlFile: "kids.html" },
-    { name: "YOUTUBE", icon: "fab fa-youtube", htmlFile: "youtube.html" },
+    { name: "YOUTUBE", icon: "fab fa-youtube", url: "https://youtube.com/playlist?list=PLhKiIzi_DlrOJXjDqCrbH8b-tqYKuVj_B&si=ySEEn4QGzo3P9Xk7" }, // Adicione o link do seu canal aqui
     { name: "SEND VIDEO", icon: "fas fa-book", htmlFile: "send.html" },
-    { name: "ABOUT", icon: "fas fa-globe", htmlFile: "abaut.html" }
+    { name: "ABOUT", icon: "fas fa-globe", htmlFile: "redes-sociais.html" }
   ];
 
   const channelsContainer = document.getElementById('channels-container');
@@ -182,7 +182,11 @@
     `;
 
     channelElement.addEventListener('click', function() {
-      window.location.href = channel.htmlFile;
+      if (channel.url) {
+        window.location.href = channel.url; // Redireciona para a URL do canal
+      } else {
+        window.location.href = channel.htmlFile; // Redireciona para o arquivo HTML
+      }
     });
 
     return channelElement;
