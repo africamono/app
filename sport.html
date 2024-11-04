@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Estilos gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #181818;
+            position: relative;
+        }
+
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            opacity: 0; /* Começa invisível */
+            transition: opacity 0.5s ease; /* Animação para aparecer */
+        }
+
+        video {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: black;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 15px;
+            background-color: #121212;
+            position: fixed;
+            bottom: 0;
+            pointer-events: auto;
+        }
+
+        .button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .button:hover {
+            transform: scale(1.2);
+        }
+
+        .button:active {
+            transform: scale(1.1);
+        }
+
+        /* Estilos do círculo de progresso */
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid orange;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            #app-container {
+                max-width: 100%;
+            }
+            .button {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading"></div>
+    <div id="app-container" onclick="toggleFullScreen()">
+        <video id="meuVideo" playsinline preload="auto"></video>
+        <div id="controls">
+            <button id="playButton" class="button">
+                <i class="fas fa-play"></i>
+            </button>
+            <a href="tv.html" class="button">
+                <i class="fas fa-tv"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const videoSources = [
+            'https://seed177.bitchute.com/OaKaSr1oCqQd/DYAalrWJCbmM.mp4'
+          
+        ];
+
+        const videoDurations = [2000];
+        const videoPlayer = document.getElementById('meuVideo');
+        const playButton = document.getElementById('playButton');
+        const streamingUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
+        const loadingIndicator = document.getElementById('loading');
+        const appContainer = document.getElementById('app-container');
+
+        let isStreaming = false;
+        let currentIndex = 0;
+
+        // Controle de histórico para o botão "voltar"
+        window.addEventListener('load', () => {
+            history.pushState(null, null, location.href);
+            // Oculta o loading após 5 segundos e exibe o app-container
+            setTimeout(() => {
+                loadingIndicator.style.display = 'none'; // Oculta o carregamento
+                appContainer.style.opacity = 1; // Torna o container visível
+                const { index, startTime } = getSyncedVideoAndTime();
+                changeVideo(index, startTime); // Inicia o vídeo
+            }, 5000); // Tempo de exibição do carregamento
+        });
+
+        window.addEventListener('popstate', (event) => {
+            if (location.hash !== '#home') {
+                // Adiciona um hash para identificar a página inicial
+                location.hash = '#home';
+                history.pushState(null, null, location.href); 
+            } else {
+                // Permite que o usuário saia somente na página inicial
+                history.back();
+            }
+        });
+
+        function getSyncedVideoAndTime() {
+            const now = Math.floor(Date.now() / 1000);
+            const totalDuration = videoDurations.reduce((a, b) => a + b, 0);
+            const syncedTime = now % totalDuration;
+
+            let accumulatedTime = 0;
+            for (let i = 0; i < videoSources.length; i++) {
+                if (syncedTime < accumulatedTime + videoDurations[i]) {
+                    return { index: i, startTime: syncedTime - accumulatedTime };
+                }
+                accumulatedTime += videoDurations[i];
+            }
+        }
+
+        function changeVideo(index, startTime) {
+            videoPlayer.src = videoSources[index];
+            videoPlayer.currentTime = startTime;
+            videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
+        }
+
+        function autoplayNextVideo() {
+            currentIndex = (currentIndex + 1) % videoSources.length;
+            const { startTime } = getSyncedVideoAndTime();
+            changeVideo(currentIndex, startTime);
+        }
+
+        function startStreaming() {
+            if (!isStreaming) {
+                videoPlayer.pause();
+                videoPlayer.src = streamingUrl;
+                videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
+                isStreaming = true;
+            }
+        }
+
+        function stopStreaming() {
+            if (isStreaming) {
+                const { index, startTime } = getSyncedVideoAndTime();
+                changeVideo(index, startTime);
+                isStreaming = false;
+            }
+        }
+
+        function checkStreaming() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('HEAD', streamingUrl, true);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    startStreaming();
+                } else {
+                    stopStreaming();
+                }
+            };
+            xhr.onerror = stopStreaming;
+            xhr.send();
+        }
+
+        setInterval(checkStreaming, 1000);
+
+        playButton.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                videoPlayer.pause();
+                playButton.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        videoPlayer.addEventListener('ended', autoplayNextVideo);
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                controls.style.display = 'none';
+            } else {
+                controls.style.display = 'flex';
+            }
+        });
+
+        function checkOrientation() {
+            if (window.innerHeight < window.innerWidth) {
+                controls.style.display = 'none';
+            } else {
+                controls.style.display = 'flex';
+            }
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                appContainer.requestFullscreen().catch(err => {
+                    console.error(`Erro ao habilitar tela cheia: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>

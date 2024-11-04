@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEND YOU VIDEO</title>
+    <style>
+        /* Configuração de estilo geral da página */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* Estilo do formulário e centralização */
+        form {
+            padding: 0px;
+            border-radius: 0px;
+            box-shadow: 0 0px 0px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            text-align: center;
+        }
+
+        /* Título */
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #ff9800; /* Cor laranja */
+        }
+
+        /* Estilo dos campos de entrada */
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            padding-left: 10px;
+            background-color: transparent; /* Fundo transparente */
+            color: #ffffff;
+            border: 1px solid #ff9800; /* Borda laranja */
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 0.9em;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group input:not(:placeholder-shown) {
+            border-color: #ff9800;
+            outline: none;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -8px;
+            left: 10px;
+            background-color: #1f1f1f;
+            padding: 0 5px;
+            color: #ff9800;
+            font-size: 0.75em;
+        }
+
+        /* Botão de Enviar */
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff9800; /* Cor laranja */
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e68900; /* Laranja mais escuro ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <form action="https://submit-form.com/Uhmw0QqNd" method="post">
+        <h1>SEND YOU VIDEO</h1>
+        
+        <div class="form-group">
+            <input type="text" id="nome" name="nome" required placeholder=" ">
+            <label for="nome">Nome</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="pais" name="pais" required placeholder=" ">
+            <label for="pais">País</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="tel" id="telefone" name="telefone" required placeholder=" ">
+            <label for="telefone">Telefone</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="email" id="email" name="email" required placeholder=" ">
+            <label for="email">Email</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="url" id="youtube" name="youtube" required placeholder=" ">
+            <label for="youtube">Link do YouTube</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="number" id="ano" name="ano" min="1900" max="2099" required placeholder=" ">
+            <label for="ano">Ano de Produção</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="produtora" name="produtora" required placeholder=" ">
+            <label for="produtora">Nome da Produtora</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="titulo" name="titulo" required placeholder=" ">
+            <label for="titulo">Título</label>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="artista" name="artista" required placeholder=" ">
+            <label for="artista">Nome do Artista</label>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
