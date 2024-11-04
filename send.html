@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SEND YOU VIDEO</title>
+    <title>SEND YOUR VIDEO</title>
     <style>
-        /* Configuração de estilo geral da página */
+        /* General page style */
         body {
             display: flex;
             justify-content: center;
@@ -18,37 +18,37 @@
             padding: 10px;
         }
 
-        /* Estilo do formulário e centralização */
+        /* Form styling and centering */
         form {
             padding: 0;
             border-radius: 5px;
-                       width: 200px;
-            max-width: 220px; /* Largura máxima ajustada para telas menores */
+            width: 200px;
+            max-width: 220px;
             text-align: center;
         }
 
-        /* Título */
+        /* Title */
         h1 {
             margin-bottom: 15px;
-            font-size: 1.2em; /* Tamanho de fonte menor */
+            font-size: 1.2em;
             color: #ff9800;
         }
 
-        /* Estilo dos campos de entrada */
+        /* Input fields styling */
         .form-group {
             position: relative;
-            margin-bottom: 10px; /* Espaçamento reduzido */
+            margin-bottom: 10px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 8px; /* Padding reduzido para telas menores */
+            padding: 8px;
             padding-left: 10px;
             background-color: transparent;
             color: #ffffff;
             border: 1px solid #ff9800;
             border-radius: 5px;
-            font-size: 0.9em; /* Fonte menor */
+            font-size: 0.9em;
         }
 
         .form-group label {
@@ -57,7 +57,7 @@
             left: 10px;
             transform: translateY(-50%);
             color: #888;
-            font-size: 0.8em; /* Fonte menor */
+            font-size: 0.8em;
             pointer-events: none;
             transition: 0.3s ease;
         }
@@ -75,18 +75,18 @@
             background-color: #1f1f1f;
             padding: 0 5px;
             color: #ff9800;
-            font-size: 0.7em; /* Fonte menor */
+            font-size: 0.7em;
         }
 
-        /* Botão de Enviar */
+        /* Submit button */
         button {
             width: 100px;
-            padding: 5px; /* Padding reduzido */
+            padding: 5px;
             background-color: #ff9800;
             color: #121212;
             border: none;
             border-radius: 0px;
-            font-size: 0.9em; /* Fonte menor */
+            font-size: 0.9em;
             cursor: pointer;
             transition: background-color 0.3s;
         }
@@ -101,18 +101,18 @@
         <h1>SEND YOUR VIDEO</h1>
         
         <div class="form-group">
-            <input type="text" id="nome" name="nome" required placeholder=" ">
-            <label for="nome">Nome</label>
+            <input type="text" id="name" name="name" required placeholder=" ">
+            <label for="name">Name</label>
         </div>
         
         <div class="form-group">
-            <input type="text" id="pais" name="pais" required placeholder=" ">
-            <label for="pais">País</label>
+            <input type="text" id="country" name="country" required placeholder=" ">
+            <label for="country">Country</label>
         </div>
         
         <div class="form-group">
-            <input type="tel" id="telefone" name="telefone" required placeholder=" ">
-            <label for="telefone">Telefone</label>
+            <input type="tel" id="phone" name="phone" required placeholder=" ">
+            <label for="phone">Phone</label>
         </div>
         
         <div class="form-group">
@@ -122,30 +122,30 @@
         
         <div class="form-group">
             <input type="url" id="youtube" name="youtube" required placeholder=" ">
-            <label for="youtube">Link do YouTube</label>
+            <label for="youtube">YouTube Link</label>
         </div>
         
         <div class="form-group">
-            <input type="number" id="ano" name="ano" min="1900" max="2099" required placeholder=" ">
-            <label for="ano">Ano de Produção</label>
+            <input type="number" id="year" name="year" min="1900" max="2099" required placeholder=" ">
+            <label for="year">Year of Production</label>
         </div>
         
         <div class="form-group">
-            <input type="text" id="produtora" name="produtora" required placeholder=" ">
-            <label for="produtora">Nome da Produtora</label>
+            <input type="text" id="production" name="production" required placeholder=" ">
+            <label for="production">Production Company</label>
         </div>
         
         <div class="form-group">
-            <input type="text" id="titulo" name="titulo" required placeholder=" ">
-            <label for="titulo">Título</label>
+            <input type="text" id="title" name="title" required placeholder=" ">
+            <label for="title">Title</label>
         </div>
         
         <div class="form-group">
-            <input type="text" id="artista" name="artista" required placeholder=" ">
-            <label for="artista">Nome do Artista</label>
+            <input type="text" id="artist" name="artist" required placeholder=" ">
+            <label for="artist">Artist's Name</label>
         </div>
 
-        <button type="submit">Enviar</button>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>
