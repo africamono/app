@@ -114,6 +114,7 @@
       color: inherit;
     }
 
+    /* Responsivo */
     @media (max-width: 480px) {
       .channel {
         width: calc(25% - 10px);
@@ -134,6 +135,13 @@
         transform: scale(0.9);
       }
     }
+
+    .offline-message {
+      display: none;
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -144,11 +152,12 @@
 
 <div class="container">
   <header>
-    <img src="we are1.png" alt="We Are" class="header-image">
+    <img src="we are1.png" alt="" class="header-image">
   </header>
   <main id="channels-container">
     <!-- Canais serão adicionados dinamicamente via JavaScript -->
   </main>
+  <div class="offline-message" id="offlineMessage">Sem internet. Verifique sua conexão.</div>
 </div>
 
 <script>
@@ -159,18 +168,19 @@
   }, 5000); // 5000 milissegundos = 5 segundos
 
   const channels = [
-    { name: "MUSIC", icon: "fas fa-music", htmlFile: "music.html" },
-    { name: "CINE", icon: "fas fa-film", htmlFile: "cine.html" },
-    { name: "NEWS", icon: "fas fa-newspaper", htmlFile: "news.html" },
-    { name: "SPORT", icon: "fas fa-futbol", htmlFile: "sport.html" },
-    { name: "GOSPEL", icon: "fas fa-church", htmlFile: "gospel.html" },
-    { name: "KIDS", icon: "fas fa-child", htmlFile: "kids.html" },
-    { name: "YOUTUBE", icon: "fab fa-youtube", url: "https://youtube.com/playlist?list=PLhKiIzi_DlrOJXjDqCrbH8b-tqYKuVj_B&si=ySEEn4QGzo3P9Xk7" }, // Adicione o link do seu canal aqui
-    { name: "SEND VIDEO", icon: "fas fa-book", htmlFile: "send.html" },
-    { name: "ABOUT", icon: "fas fa-globe", htmlFile: "abaut.html" }
+    { name: "MUSIC", icon: "fas fa-music",  url: "https://africamono.github.io/app/music.html" },
+    { name: "CINE", icon: "fas fa-film",  url: "https://africamono.github.io/app/cine.html" },
+    { name: "NEWS", icon: "fas fa-newspaper", url: "https://africamono.github.io/app/news.html" },
+    { name: "SPORT", icon: "fas fa-futbol",  url: "https://africamono.github.io/app/sport.html" },
+    { name: "GOSPEL", icon: "fas fa-church", url: "https://africamono.github.io/app/gospel.html" },
+    { name: "KIDS", icon: "fas fa-child",  url: "https://africamono.github.io/app/kids.html" },
+    { name: "YOUTUBE", icon: "fab fa-youtube", url: "https://youtube.com/playlist?list=PLhKiIzi_DlrOJXjDqCrbH8b-tqYKuVj_B&si=ySEEn4QGzo3P9Xk7" },
+    { name: "SEND VIDEO", icon: "fas fa-book", url: "https://africamono.github.io/app/send.html" },
+    { name: "ABOUT", icon: "fas fa-globe", url: "https://africamono.github.io/app/abaut.html" },
   ];
 
   const channelsContainer = document.getElementById('channels-container');
+  const offlineMessage = document.getElementById('offlineMessage');
 
   function createChannelElement(channel) {
     const channelElement = document.createElement('div');
@@ -182,10 +192,12 @@
     `;
 
     channelElement.addEventListener('click', function() {
-      if (channel.url) {
-        window.location.href = channel.url; // Redireciona para a URL do canal
+      if (navigator.onLine) {
+        // Está online, redireciona para a URL do canal
+        window.location.href = channel.url;
       } else {
-        window.location.href = channel.htmlFile; // Redireciona para o arquivo HTML
+        // Sem internet, mostra a mensagem de erro
+        offlineMessage.style.display = 'block';
       }
     });
 
@@ -195,6 +207,9 @@
   channels.forEach(channel => {
     channelsContainer.appendChild(createChannelElement(channel));
   });
+
+  // Escuta o status da rede e esconde a mensagem quando estiver online
+  window.addEventListener('online', () => offlineMessage.style.display = 'none');
 </script>
 
 </body>
