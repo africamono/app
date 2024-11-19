@@ -87,6 +87,37 @@
             z-index: 5; /* Coloca a logo acima do vídeo */
         }
 
+        .logo.hidden {
+            display: none;
+        }
+
+        #loadingSpinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+
+        #loadingSpinner.hidden {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
         @media (max-width: 480px) {
             .button {
                 font-size: 20px;
@@ -96,9 +127,10 @@
 </head>
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
-        <!-- Logotipo ajustado ao tamanho do player -->
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBDmJIevHhp8YpqKAVBeHEeYti9UzWj6JlFmu_SPyjWWQ5BtdfA9MNwPSglDHgjH8SY7uqlDUBIBRaaJFmP0vCJts9g2jU65XIUcVI9rEUYfHIXA_2SyETCJtSlJ2nVfJbMX_CicVlpQmz0bz-IfDFIUc5lsy-MWg0na3kqMSmI3-EN_jDt4xKCEsFbcE/s1600/ci.png" alt="Logo" class="logo">
+        <!-- Logotipo que aparece apenas quando o vídeo está pronto -->
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBDmJIevHhp8YpqKAVBeHEeYti9UzWj6JlFmu_SPyjWWQ5BtdfA9MNwPSglDHgjH8SY7uqlDUBIBRaaJFmP0vCJts9g2jU65XIUcVI9rEUYfHIXA_2SyETCJtSlJ2nVfJbMX_CicVlpQmz0bz-IfDFIUc5lsy-MWg0na3kqMSmI3-EN_jDt4xKCEsFbcE/s1600/ci.png" alt="Logo" id="logo" class="logo hidden">
         <video id="meuVideo" playsinline preload="auto"></video>
+        <div id="loadingSpinner"></div>
         <div id="controls" class="hidden">
             <button id="playButton" class="button">
                 <i class="fas fa-play"></i>
@@ -127,6 +159,8 @@
         const playButton = document.getElementById('playButton');
         const controls = document.getElementById('controls');
         const appContainer = document.getElementById('app-container');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const logo = document.getElementById('logo');
         let currentIndex = 0;
         let hideControlsTimeout;
 
@@ -197,6 +231,25 @@
                 document.exitFullscreen();
             }
         }
+
+        // Controle do spinner e do logotipo
+        function showLoadingSpinner() {
+            loadingSpinner.classList.remove('hidden');
+            logo.classList.add('hidden');
+        }
+
+        function hideLoadingSpinner() {
+            loadingSpinner.classList.add('hidden');
+            logo.classList.remove('hidden');
+        }
+
+        videoPlayer.addEventListener('waiting', showLoadingSpinner);
+        videoPlayer.addEventListener('playing', hideLoadingSpinner);
+        videoPlayer.addEventListener('canplay', hideLoadingSpinner);
+        videoPlayer.addEventListener('ended', showLoadingSpinner);
+
+        // Exibe o spinner inicialmente
+        showLoadingSpinner();
     </script>
 </body>
 </html>
