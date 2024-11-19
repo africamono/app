@@ -110,12 +110,16 @@
     </div>
 
     <script>
-          const videoSources = [
+        // Esconde a URL completa na barra do navegador
+        window.addEventListener('load', () => {
+            history.pushState({}, "", "/");
+        });
+
+        const videoSources = [
             'https://seed306.bitchute.com/lMC87TpFgwPv/xfaifevKAl2b.mp4',
             'https://seed171.bitchute.com/lMC87TpFgwPv/at8QcGoTIgfd.mp4',
             'https://seed128.bitchute.com/lMC87TpFgwPv/ROW95UqnLn8K.mp4',
             'https://seed163.bitchute.com/lMC87TpFgwPv/UZEgM44r4V70.mp4'
-            
         ];
 
         const videoDurations = [2000, 2000, 2000, 2000];
