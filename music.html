@@ -38,6 +38,7 @@
             height: 100%;
             background-color: black;
             outline: none;
+            position: relative;
         }
 
         #controls {
@@ -76,6 +77,47 @@
             transform: scale(1.1);
         }
 
+        .logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* A imagem vai se ajustar ao tamanho do player */
+            z-index: 5; /* Coloca a logo acima do vídeo */
+        }
+
+        .logo.hidden {
+            display: none;
+        }
+
+        #loadingSpinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+
+        #loadingSpinner.hidden {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
         @media (max-width: 480px) {
             .button {
                 font-size: 20px;
@@ -85,7 +127,10 @@
 </head>
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
+        <!-- Logotipo que aparece apenas quando o vídeo está pronto -->
+       
         <video id="meuVideo" playsinline preload="auto"></video>
+        <div id="loadingSpinner"></div>
         <div id="controls" class="hidden">
             <button id="playButton" class="button">
                 <i class="fas fa-play"></i>
@@ -97,8 +142,14 @@
     </div>
 
     <script>
-         const videoSources = [
-        'https://seed163.bitchute.com/OkD3fEQ7n2eI/mQtYcSY4zeg1.mp4',
+        // Esconde a URL completa na barra do navegador
+        window.addEventListener('load', () => {
+            history.pushState({}, "", "/");
+        });
+
+        const videoSources = [
+          
+           'https://seed163.bitchute.com/OkD3fEQ7n2eI/mQtYcSY4zeg1.mp4',
 'https://seed128.bitchute.com/OkD3fEQ7n2eI/AFYNhCCIw6HG.mp4',
 'https://zb10-7gsop1v78.bitchute.com/OkD3fEQ7n2eI/AYlCKdMmSMCI.mp4',
 'https://seed163.bitchute.com/OkD3fEQ7n2eI/YMtjrcIP0rX3.mp4',
@@ -112,13 +163,17 @@
 'https://zggg98sgwbg1gh.bitchute.com/OkD3fEQ7n2eI/MBiqM5WcRddU.mp4'
 
 
+
+
     ];
 
-    const videoDurations = [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000]; 
+    const videoDurations = [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
         const controls = document.getElementById('controls');
         const appContainer = document.getElementById('app-container');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const logo = document.getElementById('logo');
         let currentIndex = 0;
         let hideControlsTimeout;
 
@@ -189,6 +244,25 @@
                 document.exitFullscreen();
             }
         }
+
+        // Controle do spinner e do logotipo
+        function showLoadingSpinner() {
+            loadingSpinner.classList.remove('hidden');
+            logo.classList.add('hidden');
+        }
+
+        function hideLoadingSpinner() {
+            loadingSpinner.classList.add('hidden');
+            logo.classList.remove('hidden');
+        }
+
+        videoPlayer.addEventListener('waiting', showLoadingSpinner);
+        videoPlayer.addEventListener('playing', hideLoadingSpinner);
+        videoPlayer.addEventListener('canplay', hideLoadingSpinner);
+        videoPlayer.addEventListener('ended', showLoadingSpinner);
+
+        // Exibe o spinner inicialmente
+        showLoadingSpinner();
     </script>
 </body>
 </html>
