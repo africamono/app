@@ -20,33 +20,44 @@
             align-items: center;
             min-height: 100vh;
             background-color: #181818;
-            position: relative;
+            overflow: hidden;
         }
 
         #app-container {
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             width: 100%;
-            max-width: 800px;
-            opacity: 0; /* Começa invisível */
-            transition: opacity 0.5s ease; /* Animação para aparecer */
+            height: 100%;
+            position: relative;
         }
 
         video {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            height: 100%;
             background-color: black;
+            outline: none;
+            position: relative;
         }
 
         #controls {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            gap: 20px;
             width: 100%;
-            padding: 15px;
-            background-color: #121212;
+            padding: 10px 0;
+            background-color: rgba(0, 0, 0, 0.8);
             position: fixed;
             bottom: 0;
-            pointer-events: auto;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        #controls.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .button {
@@ -66,29 +77,48 @@
             transform: scale(1.1);
         }
 
-        /* Estilos da barra de progresso */
-        #loadingBar {
-            position: fixed;
+        .logo {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 5px; /* Altura da barra de progresso */
-            background-color: #f3f3f3;
-            z-index: 9999; /* Garante que a barra fique acima de outros elementos */
-            display: none; /* Começa invisível */
+            height: 100%;
+            object-fit: contain; /* A imagem vai se ajustar ao tamanho do player */
+            z-index: 5; /* Coloca a logo acima do vídeo */
         }
 
-        #loadingProgress {
-            height: 100%;
-            width: 0%; /* Começa vazio */
-            background-color: orange; /* Cor da barra de progresso */
-            transition: width 0.1s linear; /* Animação para o preenchimento */
+        .logo.hidden {
+            display: none;
+        }
+
+        #loadingSpinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+
+        #loadingSpinner.hidden {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
         }
 
         @media (max-width: 480px) {
-            #app-container {
-                max-width: 100%;
-            }
             .button {
                 font-size: 20px;
             }
@@ -96,12 +126,12 @@
     </style>
 </head>
 <body>
-    <div id="loadingBar">
-        <div id="loadingProgress"></div>
-    </div>
     <div id="app-container" onclick="toggleFullScreen()">
+        <!-- Logotipo que aparece apenas quando o vídeo está pronto -->
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEijyKTTbXybFahBZeYcfVkuHDV8TWMAzU77jl8FnZkDydJuM2vtZjpGUkXXw0GcAxPWV3a-NQRRcoJaJNdWK2xUEjfM8q7hOof46xsqJ4R7T_-Ug27M07YFKcgPy0gAm6syTusQBOuLu9Y5wnBL7vJuHT42tuGxciuFTq0QtnYmdjdzlK8R-e1LuIONrElJ/s1600/Cine%205.png" alt="Logo" id="logo" class="logo hidden">
         <video id="meuVideo" playsinline preload="auto"></video>
-        <div id="controls">
+        <div id="loadingSpinner"></div>
+        <div id="controls" class="hidden">
             <button id="playButton" class="button">
                 <i class="fas fa-play"></i>
             </button>
@@ -112,68 +142,41 @@
     </div>
 
     <script>
+        // Esconde a URL completa na barra do navegador
+        window.addEventListener('load', () => {
+            history.pushState({}, "", "/");
+        });
+
         const videoSources = [
-            'https://seed163.bitchute.com/OkD3fEQ7n2eI/mQtYcSY4zeg1.mp4',
-            'https://seed128.bitchute.com/OkD3fEQ7n2eI/AFYNhCCIw6HG.mp4',
-            'https://zb10-7gsop1v78.bitchute.com/OkD3fEQ7n2eI/AYlCKdMmSMCI.mp4',
-            'https://seed163.bitchute.com/OkD3fEQ7n2eI/YMtjrcIP0rX3.mp4',
-            'https://seed167.bitchute.com/OkD3fEQ7n2eI/vY1azvISNqC8.mp4',
-            'https://seed163.bitchute.com/OkD3fEQ7n2eI/LkldJDexZkl4.mp4'
+          
+            'https://seed307.bitchute.com/DEhpwyNnANCN/W0PBC3spNeuq.mp4',
+            'https://zggg98sgwbg1gh.bitchute.com/FKnHRMzeXs18/kxwqCTAnTCyP.mp4',
+            'https://seed128.bitchute.com/FKnHRMzeXs18/OIf2AJ7ihHT2.mp4',
+            'https://seed132.bitchute.com/nGbHlwuE5Of0/0ZFOEisWRT5K.mp4',
+            'https://seed125.bitchute.com/t1ZlIV7LYYB2/OO8Ngj6bfNEf.mp4',
+            'https://seed132.bitchute.com/Uk0CAFyGUobM/HmY2ypOHN7Ie.mp4',
+            'https://seed125.bitchute.com/DEhpwyNnANCN/fRFDKhXXSxjP.mp4',
+            'https://zggg98sgwbg1gh.bitchute.com/l73Qz4PUdGNw/1uhyZ57I31O0.mp4',
+	    'https://seed307.bitchute.com/DEhpwyNnANCN/x907jd8HDLj4.mp4',
+	    'https://seed132.bitchute.com/DEhpwyNnANCN/8S9s9ihKTkBD.mp4',
+	    'https://seed191.bitchute.com/TPcpD4w2uRnY/MShEGXl6tiJv.mp4'
+		
         ];
 
-        const videoDurations = [2000, 2000, 2000, 2000, 2000, 2000];
+        const videoDurations = [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000];
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
-        const loadingBar = document.getElementById('loadingBar');
-        const loadingProgress = document.getElementById('loadingProgress');
+        const controls = document.getElementById('controls');
         const appContainer = document.getElementById('app-container');
-
-        let isStreaming = false;
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const logo = document.getElementById('logo');
         let currentIndex = 0;
+        let hideControlsTimeout;
 
-        // Controle de histórico para o botão "voltar"
+        // Carrega vídeo inicial
         window.addEventListener('load', () => {
-            history.pushState(null, null, location.href);
-            // Mostra a barra de carregamento
-            loadingBar.style.display = 'block';
-            loadingProgress.style.width = '0%'; // Reseta a barra de progresso
-
-            // Preenche a barra de progresso ao longo de 5 segundos
-            let progressWidth = 0;
-            const totalDuration = 5000; // 5 segundos
-            const interval = 50; // Atualiza a cada 50ms
-            const increment = (interval / totalDuration) * 100; // Percentual a ser incrementado
-
-            const loadingInterval = setInterval(() => {
-                progressWidth += increment;
-                loadingProgress.style.width = `${progressWidth}%`;
-
-                if (progressWidth >= 100) {
-                    clearInterval(loadingInterval); // Para o intervalo quando atinge 100%
-                    loadingBar.style.display = 'none'; // Oculta a barra de carregamento
-                    appContainer.style.opacity = 1; // Torna o container visível
-                    const { index, startTime } = getSyncedVideoAndTime();
-                    changeVideo(index, startTime); // Inicia o vídeo
-                }
-            }, interval);
-        });
-
-        window.addEventListener('popstate', (event) => {
-            if (location.hash !== '#home') {
-                // Adiciona um hash para identificar a página inicial
-                location.hash = '#home';
-                history.pushState(null, null, location.href); 
-            } else {
-                // Permite que o usuário saia somente na página inicial
-                history.back();
-            }
-        });
-
-        // Adiciona redirecionamento ao voltar ao aplicativo
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                window.location.href = 'index.html'; // Redireciona para index.html
-            }
+            const { index, startTime } = getSyncedVideoAndTime();
+            changeVideo(index, startTime);
         });
 
         function getSyncedVideoAndTime() {
@@ -198,42 +201,8 @@
 
         function autoplayNextVideo() {
             currentIndex = (currentIndex + 1) % videoSources.length;
-            const { startTime } = getSyncedVideoAndTime();
-            changeVideo(currentIndex, startTime);
+            changeVideo(currentIndex, 0);
         }
-
-        function startStreaming() {
-            if (!isStreaming) {
-                videoPlayer.pause();
-                videoPlayer.src = streamingUrl;
-                videoPlayer.play().catch(error => console.error('Erro ao reproduzir streaming:', error));
-                isStreaming = true;
-            }
-        }
-
-        function stopStreaming() {
-            if (isStreaming) {
-                const { index, startTime } = getSyncedVideoAndTime();
-                changeVideo(index, startTime);
-                isStreaming = false;
-            }
-        }
-
-        function checkStreaming() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('HEAD', streamingUrl, true);
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 400) {
-                    startStreaming();
-                } else {
-                    stopStreaming();
-                }
-            };
-            xhr.onerror = stopStreaming;
-            xhr.send();
-        }
-
-        setInterval(checkStreaming, 1000);
 
         playButton.addEventListener('click', () => {
             if (videoPlayer.paused) {
@@ -247,25 +216,21 @@
 
         videoPlayer.addEventListener('ended', autoplayNextVideo);
 
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                controls.style.display = 'none';
-            } else {
-                controls.style.display = 'flex';
-            }
-        });
-
-        function checkOrientation() {
-            if (window.innerHeight < window.innerWidth) {
-                controls.style.display = 'none';
-            } else {
-                controls.style.display = 'flex';
-            }
+        // Controle de desaparecimento do menu
+        function showControls() {
+            controls.classList.remove('hidden');
+            clearTimeout(hideControlsTimeout);
+            hideControlsTimeout = setTimeout(() => controls.classList.add('hidden'), 10000);
         }
 
-        window.addEventListener('resize', checkOrientation);
-        checkOrientation();
+        // Mostra controles ao mover o mouse ou tocar na tela
+        document.addEventListener('mousemove', showControls);
+        document.addEventListener('touchstart', showControls);
 
+        // Inicia a lógica para esconder os controles
+        showControls();
+
+        // Função para alternar tela cheia
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 appContainer.requestFullscreen().catch(err => {
@@ -275,6 +240,25 @@
                 document.exitFullscreen();
             }
         }
+
+        // Controle do spinner e do logotipo
+        function showLoadingSpinner() {
+            loadingSpinner.classList.remove('hidden');
+            logo.classList.add('hidden');
+        }
+
+        function hideLoadingSpinner() {
+            loadingSpinner.classList.add('hidden');
+            logo.classList.remove('hidden');
+        }
+
+        videoPlayer.addEventListener('waiting', showLoadingSpinner);
+        videoPlayer.addEventListener('playing', hideLoadingSpinner);
+        videoPlayer.addEventListener('canplay', hideLoadingSpinner);
+        videoPlayer.addEventListener('ended', showLoadingSpinner);
+
+        // Exibe o spinner inicialmente
+        showLoadingSpinner();
     </script>
 </body>
 </html>
