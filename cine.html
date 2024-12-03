@@ -165,7 +165,7 @@ video {
 </head>
 <body>
     <div id="app-container" onclick="toggleFullScreen()">
-<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2TfPhI9UbsF2AWP-0yxcP9vKVvyqOFKstUZMMSI4jhWjd2GTBcJtlDxZbKIl4xVO2K8OepIX6E3-Qmukmc-EOCwy4y5VFJQfJlg_UwGfct3tBEo0ZmXTp3vj4DrR9VUtysCZ_OcapLWU28x-e466kdh83skrg_NgqzNbYnl8dg16cpSB6l0KD_ohgSC0/s1600/Cine%201.png" alt="Logo" id="logo" class="logo hidden">
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFz0-vKBswU84U9nccHfpHbVmANUQ_26M8zUz7AQUCA0q4fJPJ726udDuwLUyIG7X8_SvFX0w5txmOSNJcLiKBaDK_XRcCRvCLSryZc3P_9mVFRfjeFP82XMeC8SMYhhXavX5izwo1bIzT2_ZGSpEQQn1x71pyaL5ZgdBAmobdoMHAOH7hDALJN_GgcdU/s1600/Cine%204.png" alt="Logo" id="logo" class="logo hidden">
 
         <video id="meuVideo" playsinline preload="auto"></video>
         <div id="loadingSpinner"></div>
@@ -185,13 +185,21 @@ video {
     </div>
 
     <script>
-      
+     
             const videoSources = [
-               'https://seed177.bitchute.com/OaKaSr1oCqQd/DYAalrWJCbmM.mp4'
-		
+                 'https://seed306.bitchute.com/lMC87TpFgwPv/xfaifevKAl2b.mp4',
+            'https://seed171.bitchute.com/lMC87TpFgwPv/at8QcGoTIgfd.mp4',
+            'https://seed128.bitchute.com/lMC87TpFgwPv/ROW95UqnLn8K.mp4',
+            'https://seed163.bitchute.com/lMC87TpFgwPv/UZEgM44r4V70.mp4',
+            'https://seed132.bitchute.com/nGbHlwuE5Of0/0ZFOEisWRT5K.mp4',
+            'https://seed177.bitchute.com/nGbHlwuE5Of0/tNOY0XzqyETO.mp4',
+            'https://seed167.bitchute.com/nGbHlwuE5Of0/nQ8tw709dz2F.mp4',
+            'https://seed167.bitchute.com/nGbHlwuE5Of0/srS3PsEaU8ip.mp4',
+            'https://seed126.bitchute.com/nGbHlwuE5Of0/xkAB0alVD6Fz.mp4'
         ];
 
-        const videoDurations = [2000];
+        const videoDurations = [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000];
+
         const videoPlayer = document.getElementById('meuVideo');
         const playButton = document.getElementById('playButton');
         const controls = document.getElementById('controls');
