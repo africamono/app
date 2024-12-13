@@ -1,252 +1,301 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Africa Mono Kuduro | We are Humanity</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        /* Estilos gerais */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+<html><head><base href="/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Africa Mono Kuduro | We are Humanity</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: #000000;
+        font-family: Arial, sans-serif;
+    }
+
+    #main-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    #fullscreen-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+    }
+
+    #fullscreen-container:fullscreen {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    #fullscreen-container:fullscreen video {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background-color: #000;
+        margin: 0;
+    }
+
+    #button-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    #playButton {
+        font-size: 50px;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.3s;
+        opacity: 0;
+        display: none;
+    }
+
+    #playButton.visible {
+        display: block;
+        opacity: 1;
+        animation: fadeInOut 5s forwards;
+    }
+
+    #satellite-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.5s;
+        pointer-events: none;
+        text-align: center;
+        font-size: 16px;
+        min-width: 200px;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translate(-50%, -60%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { opacity: 0; display: none; }
+    }
+
+    #progress-circle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid #fc8a38;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 10;
+    }
+
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    #loading-message {
+        position: absolute;
+        top: calc(50% + 60px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        z-index: 10;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    #logo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 100;
+        pointer-events: none;
+    }
+
+    #logo-overlay.visible {
+        opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+        #fullscreen-container {
+            height: 100vh;
+        }
+        
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #181818;
-            overflow: hidden;
-        }
-
-        #app-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            outline: none;
-            position: relative;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            width: 100%;
-            padding: 10px 0;
-            background-color: rgba(0, 0, 0, 0.8);
             position: fixed;
-            bottom: 0;
-            z-index: 10;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-
-        #controls.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .button {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 30px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .button:hover {
-            transform: scale(1.2);
-        }
-
-        .button:active {
-            transform: scale(1.1);
-        }
-
-        .logo {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* A imagem vai se ajustar ao tamanho do player */
-            z-index: 5; /* Coloca a logo acima do vídeo */
         }
-
-        .logo.hidden {
-            display: none;
-        }
-
-        #loadingSpinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border: 6px solid rgba(255, 255, 255, 0.2);
-            border-top: 6px solid #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 10;
-        }
-
-        #loadingSpinner.hidden {
-            display: none;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .button {
-                font-size: 20px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
-    <div id="app-container" onclick="toggleFullScreen()">
-        <!-- Logotipo que aparece apenas quando o vídeo está pronto -->
-        
+    <div id="fullscreen-container">   
         <video id="meuVideo" playsinline preload="auto"></video>
-        <div id="loadingSpinner"></div>
-        <div id="controls" class="hidden">
-            <button id="playButton" class="button">
-                <i class="fas fa-play"></i>
-            </button>
-            <a href="tv.html" class="button">
-                <i class="fas fa-tv"></i>
-            </a>
+        <img id="logo-overlay" 
+             src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj4QEnGwCCVGf828gnwDZ4MuxfllJuJjffr9g6UuhvK1l3hKyIoRIkWKwTei201g6VJfa3deQ37FeFe5ygxwiXb2YICOqHSygcbA7gmPJKDtjzWV-zYVcnHB5P8cir6SfZ5C60vCJGbAxosdlGKtRWukvmIwHYjEgRsf3XV8_mhYTOrxH8imCmn_gneUM7V/s1600/kUDURO.png" 
+             alt="Logo">
+        <div id="progress-circle" class="hidden"></div>
+        <div id="loading-message" class="hidden">Checking the connection...</div>
+        <div id="satellite-message">Adjusting the signal on the satellite...</div>
+        <div id="button-container">
+            <i id="playButton" class="fas fa-play"></i>
         </div>
     </div>
 
-    <script>
+<script>
+    const streamUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
+    const videoSources = [
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4'
+    ];
 
-        const videoSources = [
-          
-            'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4'
-          
-            
-		
-        ];
+    const videoPlayer = document.getElementById("meuVideo");
+    const playButton = document.getElementById("playButton");
+    const progressCircle = document.getElementById("progress-circle");
+    const loadingMessage = document.getElementById("loading-message");
+    const logoOverlay = document.getElementById('logo-overlay');
+    let isVideoPlaying = false;
+    let playButtonTimeout;
 
-        const videoDurations = [2000];
-        const videoPlayer = document.getElementById('meuVideo');
-        const playButton = document.getElementById('playButton');
-        const controls = document.getElementById('controls');
-        const appContainer = document.getElementById('app-container');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const logo = document.getElementById('logo');
-        let currentIndex = 0;
-        let hideControlsTimeout;
-
-        // Carrega vídeo inicial
-        window.addEventListener('load', () => {
-            const { index, startTime } = getSyncedVideoAndTime();
-            changeVideo(index, startTime);
-        });
-
-        function getSyncedVideoAndTime() {
-            const now = Math.floor(Date.now() / 1000);
-            const totalDuration = videoDurations.reduce((a, b) => a + b, 0);
-            const syncedTime = now % totalDuration;
-
-            let accumulatedTime = 0;
-            for (let i = 0; i < videoSources.length; i++) {
-                if (syncedTime < accumulatedTime + videoDurations[i]) {
-                    return { index: i, startTime: syncedTime - accumulatedTime };
-                }
-                accumulatedTime += videoDurations[i];
+    function toggleFullScreen() {
+        const container = document.getElementById('fullscreen-container');
+        if (!document.fullscreenElement) {
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
             }
-        }
-
-        function changeVideo(index, startTime) {
-            videoPlayer.src = videoSources[index];
-            videoPlayer.currentTime = startTime;
-            videoPlayer.play().catch(error => console.error('Erro ao reproduzir vídeo:', error));
-        }
-
-        function autoplayNextVideo() {
-            currentIndex = (currentIndex + 1) % videoSources.length;
-            changeVideo(currentIndex, 0);
-        }
-
-        playButton.addEventListener('click', () => {
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-                playButton.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                videoPlayer.pause();
-                playButton.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        videoPlayer.addEventListener('ended', autoplayNextVideo);
-
-        // Controle de desaparecimento do menu
-        function showControls() {
-            controls.classList.remove('hidden');
-            clearTimeout(hideControlsTimeout);
-            hideControlsTimeout = setTimeout(() => controls.classList.add('hidden'), 10000);
-        }
-
-        // Mostra controles ao mover o mouse ou tocar na tela
-        document.addEventListener('mousemove', showControls);
-        document.addEventListener('touchstart', showControls);
-
-        // Inicia a lógica para esconder os controles
-        showControls();
-
-        // Função para alternar tela cheia
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                appContainer.requestFullscreen().catch(err => {
-                    console.error(`Erro ao habilitar tela cheia: ${err.message}`);
-                });
-            } else {
+        } else {
+            if (document.exitFullscreen) {
                 document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
             }
         }
+    }
 
-        // Controle do spinner e do logotipo
-        function showLoadingSpinner() {
-            loadingSpinner.classList.remove('hidden');
-            logo.classList.add('hidden');
+    // Force landscape orientation on mobile
+    if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(function(error) {
+            console.log("Orientation lock failed: " + error);
+        });
+    }
+
+    document.getElementById('fullscreen-container').addEventListener('click', toggleFullScreen);
+
+    function showSatelliteMessage() {
+        const message = document.getElementById('satellite-message');
+        message.style.opacity = '1';
+        setTimeout(() => {
+            message.style.opacity = '0';
+        }, 3000);
+    }
+
+    function showLoading() {
+        progressCircle.classList.remove("hidden");
+        loadingMessage.classList.remove("hidden");
+        playButton.classList.remove('visible');
+    }
+
+    function hideLoading() {
+        progressCircle.classList.add("hidden");
+        loadingMessage.classList.add("hidden");
+    }
+
+    async function loadVideo() {
+        showLoading();
+        videoPlayer.src = videoSources[0];
+        videoPlayer.load();
+        
+        videoPlayer.oncanplay = () => {
+            hideLoading();
+            playButton.classList.add('visible');
+        };
+    }
+
+    playButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (videoPlayer.paused) {
+            videoPlayer.play().catch(console.error);
+            playButton.classList.remove('visible');
+            logoOverlay.classList.add('visible');
         }
+    });
 
-        function hideLoadingSpinner() {
-            loadingSpinner.classList.add('hidden');
-            logo.classList.remove('hidden');
-        }
+    videoPlayer.addEventListener("playing", () => {
+        isVideoPlaying = true;
+        hideLoading();
+        playButton.classList.remove('visible');
+        logoOverlay.classList.add('visible');
+    });
 
-        videoPlayer.addEventListener('waiting', showLoadingSpinner);
-        videoPlayer.addEventListener('playing', hideLoadingSpinner);
-        videoPlayer.addEventListener('canplay', hideLoadingSpinner);
-        videoPlayer.addEventListener('ended', showLoadingSpinner);
+    videoPlayer.addEventListener("pause", () => {
+        isVideoPlaying = false;
+        logoOverlay.classList.remove('visible');
+    });
 
-        // Exibe o spinner inicialmente
-        showLoadingSpinner();
-    </script>
+    videoPlayer.addEventListener("ended", () => {
+        logoOverlay.classList.remove('visible');
+        loadVideo();
+    });
+
+    // Initial load
+    loadVideo();
+</script>
 </body>
 </html>
