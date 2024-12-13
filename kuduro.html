@@ -165,6 +165,67 @@
         opacity: 1;
     }
 
+    #player-menu {
+        position: absolute;
+        right: -250px;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        color: white;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    #player-menu.open {
+        right: 0;
+    }
+
+    #menu-toggle {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+        transition: all 0.3s ease;
+    }
+
+    .menu-item {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        padding-left: 10px;
+    }
+
+    .menu-item i {
+        width: 20px;
+        text-align: center;
+    }
+
+    #volume-control {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .menu-header {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
     @media (max-width: 480px) {
         #fullscreen-container {
             height: 100vh;
@@ -195,6 +256,28 @@
         <div id="satellite-message">Adjusting the signal on the satellite...</div>
         <div id="button-container">
             <i id="playButton" class="fas fa-play"></i>
+        </div>
+
+        <i id="menu-toggle" class="fas fa-bars"></i>
+
+        <div id="player-menu">
+            <div class="menu-header">Player Menu</div>
+            <div class="menu-item" id="togglePlay">
+                <i class="fas fa-play"></i>
+                <span>Play/Pause</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1">
+            </div>
+            <div class="menu-item" id="toggleFullscreen">
+                <i class="fas fa-expand"></i>
+                <span>Fullscreen</span>
+            </div>
+            <div class="menu-item" id="reloadVideo">
+                <i class="fas fa-redo"></i>
+                <span>Reload Video</span>
+            </div>
         </div>
     </div>
 
@@ -296,6 +379,71 @@
 
     // Initial load
     loadVideo();
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const playerMenu = document.getElementById('player-menu');
+    const volumeControl = document.getElementById('volume-control');
+    const togglePlay = document.getElementById('togglePlay');
+    const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
+    const reloadVideo = document.getElementById('reloadVideo');
+
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playerMenu.classList.toggle('open');
+        menuToggle.classList.toggle('fa-bars');
+        menuToggle.classList.toggle('fa-times');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!playerMenu.contains(e.target) && e.target !== menuToggle) {
+            playerMenu.classList.remove('open');
+            menuToggle.classList.remove('fa-times');
+            menuToggle.classList.add('fa-bars');
+        }
+    });
+
+    // Volume control
+    volumeControl.addEventListener('input', (e) => {
+        videoPlayer.volume = e.target.value;
+    });
+
+    // Play/Pause toggle
+    togglePlay.addEventListener('click', () => {
+        if (videoPlayer.paused) {
+            videoPlayer.play();
+            togglePlay.querySelector('i').classList.remove('fa-play');
+            togglePlay.querySelector('i').classList.add('fa-pause');
+        } else {
+            videoPlayer.pause();
+            togglePlay.querySelector('i').classList.remove('fa-pause');
+            togglePlay.querySelector('i').classList.add('fa-play');
+        }
+    });
+
+    // Fullscreen toggle
+    toggleFullscreenBtn.addEventListener('click', toggleFullScreen);
+
+    // Reload video
+    reloadVideo.addEventListener('click', () => {
+        loadVideo();
+    });
+
+    // Update play/pause icon on video state change
+    videoPlayer.addEventListener('play', () => {
+        togglePlay.querySelector('i').classList.remove('fa-play');
+        togglePlay.querySelector('i').classList.add('fa-pause');
+    });
+
+    videoPlayer.addEventListener('pause', () => {
+        togglePlay.querySelector('i').classList.remove('fa-pause');
+        togglePlay.querySelector('i').classList.add('fa-play');
+    });
+
+    // Prevent menu clicks from triggering fullscreen
+    playerMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 </script>
 </body>
 </html>
