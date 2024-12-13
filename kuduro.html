@@ -16,14 +16,6 @@
         font-family: Arial, sans-serif;
     }
 
-    #main-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-    }
-
     #fullscreen-container {
         position: relative;
         width: 100%;
@@ -167,31 +159,37 @@
 
     #player-menu {
         position: absolute;
-        right: -250px;
+        left: -250px;
         top: 0;
         width: 250px;
         height: 100%;
         background: rgba(0, 0, 0, 0.85);
-        transition: right 0.3s ease;
+        transition: left 0.3s ease;
         z-index: 1000;
         color: white;
         padding: 20px;
         box-sizing: border-box;
+        overflow-y: auto;
     }
 
     #player-menu.open {
-        right: 0;
+        left: 0;
     }
 
     #menu-toggle {
         position: absolute;
-        right: 20px;
+        left: 20px;
         top: 20px;
         color: white;
         font-size: 24px;
         cursor: pointer;
         z-index: 1001;
         transition: all 0.3s ease;
+        opacity: 1;
+    }
+
+    #menu-toggle.hidden {
+        opacity: 0;
     }
 
     .menu-item {
@@ -214,16 +212,26 @@
         text-align: center;
     }
 
-    #volume-control {
-        width: 100%;
-        margin: 10px 0;
-    }
-
     .menu-header {
         font-size: 1.2em;
         font-weight: bold;
         margin-bottom: 20px;
         text-align: center;
+    }
+
+    .channel-item {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        display: block;
+    }
+
+    .channel-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    #channel-list {
+        margin-top: 10px;
     }
 
     @media (max-width: 480px) {
@@ -261,22 +269,9 @@
         <i id="menu-toggle" class="fas fa-bars"></i>
 
         <div id="player-menu">
-            <div class="menu-header">Player Menu</div>
-            <div class="menu-item" id="togglePlay">
-                <i class="fas fa-play"></i>
-                <span>Play/Pause</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1">
-            </div>
-            <div class="menu-item" id="toggleFullscreen">
-                <i class="fas fa-expand"></i>
-                <span>Fullscreen</span>
-            </div>
-            <div class="menu-item" id="reloadVideo">
-                <i class="fas fa-redo"></i>
-                <span>Reload Video</span>
+            <div class="menu-header">We are Humanity</div>
+            <div class="menu-header" style="margin-top: 20px;"></div>
+            <div id="channel-list">
             </div>
         </div>
     </div>
@@ -284,7 +279,25 @@
 <script>
     const streamUrl = 'https://edge1-us-newyork.picarto.tv/stream/golive%2bafricamono.mp4';
     const videoSources = [
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
+        'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4',
         'https://seed128.bitchute.com/OkD3fEQ7n2eI/CUQimJR7WqwP.mp4'
+    ];
+
+    const channels = [
+        { name: 'Channel Music', link: 'https://africamono.github.io/app/music.html' },
+        { name: 'Channel Kuduro', link: 'https://africamono.github.io/app/kuduro.html' },
+        { name: 'Channel Cine', link: 'https://africamono.github.io/app/cine.html' },
+        { name: 'Channel Gospel', link: 'https://africamono.github.io/app/gospel.html' },
+        { name: 'Channel Kids', link: 'https://africamono.github.io/app/kids.html' },
+        { name: 'Channel News', link: 'https://africamono.github.io/app/news.html' },
+        { name: 'Channel Sport', link: 'https://africamono.github.io/app/sport.html' },
+        { name: 'About', link: 'https://africamono.github.io/app/music.html' }
     ];
 
     const videoPlayer = document.getElementById("meuVideo");
@@ -294,6 +307,24 @@
     const logoOverlay = document.getElementById('logo-overlay');
     let isVideoPlaying = false;
     let playButtonTimeout;
+    const menuToggle = document.getElementById('menu-toggle');
+    const playerMenu = document.getElementById('player-menu');
+
+    function createChannelList() {
+        const channelList = document.getElementById('channel-list');
+        channels.forEach((channel, index) => {
+            const channelItem = document.createElement('a');
+            channelItem.href = channel.link;
+            channelItem.className = 'menu-item channel-item';
+            channelItem.style.textDecoration = 'none';
+            channelItem.style.color = 'white';
+            channelItem.innerHTML = `
+                <i class="fas fa-tv"></i>
+                <span>${channel.name}</span>
+            `;
+            channelList.appendChild(channelItem);
+        });
+    }
 
     function toggleFullScreen() {
         const container = document.getElementById('fullscreen-container');
@@ -303,6 +334,9 @@
             } else if (container.webkitRequestFullscreen) {
                 container.webkitRequestFullscreen();
             }
+            playerMenu.classList.remove('open');
+            menuToggle.classList.remove('fa-times');
+            menuToggle.classList.add('fa-bars');
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
@@ -312,7 +346,6 @@
         }
     }
 
-    // Force landscape orientation on mobile
     if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape').catch(function(error) {
             console.log("Orientation lock failed: " + error);
@@ -377,16 +410,6 @@
         loadVideo();
     });
 
-    // Initial load
-    loadVideo();
-
-    const menuToggle = document.getElementById('menu-toggle');
-    const playerMenu = document.getElementById('player-menu');
-    const volumeControl = document.getElementById('volume-control');
-    const togglePlay = document.getElementById('togglePlay');
-    const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
-    const reloadVideo = document.getElementById('reloadVideo');
-
     menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         playerMenu.classList.toggle('open');
@@ -394,7 +417,6 @@
         menuToggle.classList.toggle('fa-times');
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!playerMenu.contains(e.target) && e.target !== menuToggle) {
             playerMenu.classList.remove('open');
@@ -403,47 +425,29 @@
         }
     });
 
-    // Volume control
-    volumeControl.addEventListener('input', (e) => {
-        videoPlayer.volume = e.target.value;
-    });
-
-    // Play/Pause toggle
-    togglePlay.addEventListener('click', () => {
-        if (videoPlayer.paused) {
-            videoPlayer.play();
-            togglePlay.querySelector('i').classList.remove('fa-play');
-            togglePlay.querySelector('i').classList.add('fa-pause');
-        } else {
-            videoPlayer.pause();
-            togglePlay.querySelector('i').classList.remove('fa-pause');
-            togglePlay.querySelector('i').classList.add('fa-play');
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            menuToggle.classList.remove('hidden');
         }
     });
 
-    // Fullscreen toggle
-    toggleFullscreenBtn.addEventListener('click', toggleFullScreen);
+    let menuTimeout;
+    function showMenuToggle() {
+        menuToggle.classList.remove('hidden');
+        if (menuTimeout) {
+            clearTimeout(menuTimeout);
+        }
+        menuTimeout = setTimeout(() => {
+            if (!playerMenu.classList.contains('open')) {
+                menuToggle.classList.add('hidden');
+            }
+        }, 2000);
+    }
 
-    // Reload video
-    reloadVideo.addEventListener('click', () => {
-        loadVideo();
-    });
+    document.addEventListener('mousemove', showMenuToggle);
 
-    // Update play/pause icon on video state change
-    videoPlayer.addEventListener('play', () => {
-        togglePlay.querySelector('i').classList.remove('fa-play');
-        togglePlay.querySelector('i').classList.add('fa-pause');
-    });
-
-    videoPlayer.addEventListener('pause', () => {
-        togglePlay.querySelector('i').classList.remove('fa-pause');
-        togglePlay.querySelector('i').classList.add('fa-play');
-    });
-
-    // Prevent menu clicks from triggering fullscreen
-    playerMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+    loadVideo();
+    createChannelList();
 </script>
 </body>
 </html>
